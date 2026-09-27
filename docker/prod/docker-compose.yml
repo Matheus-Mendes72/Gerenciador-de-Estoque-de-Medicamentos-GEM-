@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: gem-postgres-prod
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${PROD_POSTGRES_DB}
+      POSTGRES_USER: ${PROD_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PROD_POSTGRES_PASSWORD}
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - gem_postgres_prod_data:/var/lib/postgresql
+
+volumes:
+  gem_postgres_prod_data:

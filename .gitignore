@@ -18,7 +18,6 @@ target/
 *.iws
 *.iml
 *.ipr
-.env
 
 ### NetBeans ###
 /nbproject/private/
@@ -32,3 +31,27 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Logs
+*.log
+
+# Backups
+backups/
+database-backups/
+
+# Sistema
+.DS_Store
+Thumbs.db
