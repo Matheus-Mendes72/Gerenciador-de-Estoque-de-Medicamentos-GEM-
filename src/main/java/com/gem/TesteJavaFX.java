@@ -1,24 +1,20 @@
 package com.gem;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.springframework.stereotype.Component;
 
-public class TesteJavaFX extends Application {
+@Component
+public class TesteJavaFX {
 
-    @Override
-    public void start(Stage stage) {
+    public void mostrar(Stage stage) {
         Label texto = new Label("JavaFX está funcionando!");
 
         Scene cena = new Scene(texto, 400, 200);
 
-        stage.setTitle("Teste JavaFX");
+        stage.setTitle("Gerenciador de Estoque de Medicamentos");
         stage.setScene(cena);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

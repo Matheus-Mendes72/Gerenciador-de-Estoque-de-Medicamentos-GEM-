@@ -102,7 +102,11 @@
 				<version>0.0.8</version>
 				
 				<configuration>
-					<mainClass>com.gem.TesteJavaFX</mainClass>
+					<mainClass>com.gem.DemoApplication</mainClass>
+
+					<options>
+    					<option>-Dspring.profiles.active=dev</option>
+					</options>
 				</configuration>
 			</plugin>
 		</plugins>
