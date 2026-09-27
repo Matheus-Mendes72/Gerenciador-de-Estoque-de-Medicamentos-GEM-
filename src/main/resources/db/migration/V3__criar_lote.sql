@@ -6,5 +6,5 @@ CREATE TABLE lote (
 
     CONSTRAINT fk_lote_medicamento
         FOREIGN KEY (medicamento_id)
-        REFERENCES medicamento(id)
+        REFERENCES medicamentos(id)
 );
