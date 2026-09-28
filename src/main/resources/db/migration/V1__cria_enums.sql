@@ -1,0 +1,24 @@
+CREATE TYPE cargo AS ENUM (
+    'COORDENADOR',
+    'FUNCIONARIO_CAF',
+    'FUNCIONARIO_SAT'
+);
+
+CREATE TYPE tipo_mov AS ENUM (
+    'ENTRADA',
+    'SAIDA'
+);
+
+CREATE TYPE setor_hosp AS ENUM (
+    'SATELITE',
+    'EMERGENCIA',
+    'CLINICA_MEDICA',
+    'PEDIATRIA',
+    'MATERNIDADE',
+    'ESTABILIZACAO'
+);
+
+CREATE TYPE tipo_med AS ENUM (
+    'ANTIBIOTICO',
+    'CONTROLADO'
+);
