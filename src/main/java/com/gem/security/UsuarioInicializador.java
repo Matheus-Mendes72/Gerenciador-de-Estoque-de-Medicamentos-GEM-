@@ -39,4 +39,14 @@ public class UsuarioInicializador implements CommandLineRunner {
             usuarioRepository.save(usuario);
         }
     }
+
+    @Override
+    public void run(String... args) {
+
+        criarUsuario(CargoProfissional.COORDENADOR, senhaCoordenador);
+
+        criarUsuario(CargoProfissional.FUNCIONARIO_CAF, senhaCaf);
+
+        criarUsuario(CargoProfissional.FUNCIONARIO_SAT, senhaSat);
+    }
 }
