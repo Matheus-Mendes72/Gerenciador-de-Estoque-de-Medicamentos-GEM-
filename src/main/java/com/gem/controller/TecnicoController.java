@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.gem.model.CargoProfissional;
 import com.gem.model.Usuario;
-import com.gem.service.SessaoUsuario;
+import com.gem.security.SessaoUsuario;
 
 @Component
 public class TecnicoController {
@@ -32,7 +32,7 @@ public class TecnicoController {
 
     private void validarTecnico() {
 
-        Usuario usuario = sessaoUsuario.getUsuario();
+        Usuario usuario = sessaoUsuario.getUsuarioAtual();
 
         if (usuario == null
                 || usuario.getCargo() != CargoProfissional.FUNCIONARIO_SAT) {

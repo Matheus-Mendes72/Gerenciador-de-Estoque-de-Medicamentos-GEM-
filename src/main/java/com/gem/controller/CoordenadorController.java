@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.gem.model.CargoProfissional;
 import com.gem.model.Usuario;
-import com.gem.service.SessaoUsuario;
+import com.gem.security.SessaoUsuario;
 
 @Component
 public class CoordenadorController {
@@ -53,7 +53,7 @@ public class CoordenadorController {
 
     private void validarCoordenador() {
 
-        Usuario usuario = sessaoUsuario.getUsuario();
+        Usuario usuario = sessaoUsuario.getUsuarioAtual();
 
         if (usuario == null ||
             usuario.getCargo() != CargoProfissional.COORDENADOR) {
