@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.view.MovimentacaoViewController"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <style>
+        .root {
+            -fx-font-family: "Arial";
+            -fx-background-color: #F5F7FA;
+        }
+
+        .sidebar {
+            -fx-background-color: #002D73;
+        }
+
+        .sidebar-separator {
+            -fx-background-color: rgba(255,255,255,0.25);
+        }
+
+        .nav-button {
+            -fx-background-color: #002D73;
+            -fx-background-radius: 0;
+            -fx-text-fill: #B7C5DB;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-alignment: CENTER_LEFT;
+            -fx-padding: 0 20 0 20;
+            -fx-cursor: hand;
+        }
+
+        .nav-button:hover {
+            -fx-background-color: #174A8A;
+        }
+
+        .nav-button-active {
+            -fx-background-color: #66BB6A;
+            -fx-text-fill: white;
+        }
+
+        .sidebar-user {
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+        }
+
+        .sidebar-exit {
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-cursor: hand;
+        }
+
+        .page-title {
+            -fx-text-fill: #0D3B82;
+            -fx-font-size: 26px;
+            -fx-font-weight: bold;
+        }
+
+        .page-subtitle {
+            -fx-text-fill: #53627A;
+            -fx-font-size: 14px;
+        }
+
+        .access-badge {
+            -fx-background-color: #D2F6F0;
+            -fx-background-radius: 7;
+            -fx-text-fill: #176A69;
+            -fx-font-size: 13px;
+            -fx-font-weight: bold;
+            -fx-padding: 7 14 7 14;
+        }
+
+        .main-card {
+            -fx-background-color: white;
+            -fx-background-radius: 14;
+            -fx-border-color: #1976D2;
+            -fx-border-width: 1.2;
+            -fx-border-radius: 14;
+        }
+
+        .operation-button {
+            -fx-background-radius: 7;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        }
+
+        .dispense-button {
+            -fx-background-color: #1976D2;
+            -fx-text-fill: white;
+        }
+
+        .return-button {
+            -fx-background-color: #ECFBF5;
+            -fx-border-color: #B9EACB;
+            -fx-border-radius: 7;
+            -fx-text-fill: #32B85A;
+        }
+
+        .field-label {
+            -fx-text-fill: #53627A;
+            -fx-font-size: 12px;
+            -fx-font-weight: bold;
+        }
+
+        .field {
+            -fx-background-color: white;
+            -fx-background-radius: 7;
+            -fx-border-color: #D9E1EC;
+            -fx-border-radius: 7;
+            -fx-text-fill: #123D78;
+            -fx-font-size: 14px;
+            -fx-padding: 0 12 0 12;
+        }
+
+        .section-title {
+            -fx-text-fill: #0D3B82;
+            -fx-font-size: 13px;
+            -fx-font-weight: bold;
+        }
+
+        .summary {
+            -fx-background-color: #002D73;
+            -fx-background-radius: 14;
+        }
+
+        .summary-title {
+            -fx-text-fill: white;
+            -fx-font-size: 18px;
+            -fx-font-weight: bold;
+        }
+
+        .summary-label {
+            -fx-text-fill: #9CB1CF;
+            -fx-font-size: 12px;
+            -fx-font-weight: bold;
+        }
+
+        .summary-value {
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+        }
+
+        .summary-separator {
+            -fx-background-color: rgba(255,255,255,0.28);
+        }
+
+        .confirm-button {
+            -fx-background-color: #66BB6A;
+            -fx-background-radius: 8;
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        }
+
+        .cancel-button {
+            -fx-background-color: transparent;
+            -fx-background-radius: 8;
+            -fx-border-color: rgba(255,255,255,0.28);
+            -fx-border-radius: 8;
+            -fx-text-fill: #A9B8D0;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        }
+    </style>
+
+    <!-- MENU LATERAL -->
+
+    <left>
+
+        <VBox
+            prefWidth="277.0"
+            styleClass="sidebar">
+
+            <VBox
+                spacing="18"
+                style="-fx-padding: 25 17 0 17;
+                       -fx-background-color: #002D73;">
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <ImageView
+                        fitHeight="68.0"
+                        fitWidth="200.0"
+                        preserveRatio="true">
+
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+
+                    </ImageView>
+
+                </HBox>
+
+                <Separator
+                    styleClass="sidebar-separator"/>
+
+            </VBox>
+
+            <Region
+                style="-fx-background-color: #002D73;"
+                VBox.vgrow="ALWAYS"/>
+
+            <VBox
+                prefWidth="277.0"
+                spacing="5.0"
+                style="-fx-background-color: #002D73;">
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="MOVIMENTAÇÃO"
+                    styleClass="nav-button, nav-button-active"/>
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="ESTOQUE"
+                    styleClass="nav-button"/>
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="HISTÓRICO"
+                    styleClass="nav-button"/>
+
+            </VBox>
+
+            <Region
+                style="-fx-background-color: #002D73;"
+                VBox.vgrow="ALWAYS"/>
+
+            <VBox
+                spacing="16"
+                style="-fx-padding: 0 17 24 17;
+                       -fx-background-color: #002D73;">
+
+                <Separator
+                    styleClass="sidebar-separator"/>
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <Label
+                        alignment="CENTER"
+                        prefHeight="43"
+                        prefWidth="43"
+                        style="-fx-background-color:#526D96;
+                               -fx-background-radius:50%;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;"
+                        text="GEM"/>
+
+                    <Label
+                        fx:id="usuarioLabel"
+                        styleClass="sidebar-user"
+                        text="Usuário"/>
+
+                </HBox>
+
+                <Button
+                    text="Sair do sistema"
+                    onAction="#sair"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+            </VBox>
+
+        </VBox>
+
+    </left>
+
+    <!-- ÁREA PRINCIPAL -->
+
+    <center>
+
+        <VBox
+            spacing="25"
+            style="-fx-padding: 48 36 35 34;">
+
+            <!-- CABEÇALHO -->
+
+            <HBox alignment="CENTER_LEFT">
+
+                <VBox
+                    prefWidth="566.0"
+                    spacing="6">
+
+                    <Label
+                        text="Movimentação de Medicamentos"
+                        styleClass="page-title"/>
+
+                    <Label
+                        text="Registre entradas, saídas e retornos de medicamentos"
+                        styleClass="page-subtitle"/>
+
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label
+                    fx:id="acessoLabel"
+                    styleClass="access-badge"
+                    text="Acesso: Usuário"/>
+
+            </HBox>
+
+            <Separator/>
+
+            <!-- CONTEÚDO -->
+
+            <HBox
+                spacing="25"
+                VBox.vgrow="ALWAYS">
+
+                <!-- FORMULÁRIO -->
+
+                <VBox
+                    maxWidth="738"
+                    prefWidth="738"
+                    spacing="20"
+                    style="-fx-padding: 24;"
+                    styleClass="main-card">
+
+                    <HBox
+                        alignment="CENTER"
+                        spacing="12">
+
+                        <Button
+                            prefHeight="40"
+                            prefWidth="315"
+                            text="DISPENSAÇÃO DE MEDICAMENTO"
+                            styleClass="operation-button, dispense-button"
+                            onAction="#confirmarSaida"
+                            HBox.hgrow="ALWAYS"/>
+
+                        <Button
+                            prefHeight="40"
+                            prefWidth="315"
+                            text="RETORNO AO ESTOQUE"
+                            styleClass="operation-button, return-button"
+                            onAction="#confirmarRetorno"
+                            HBox.hgrow="ALWAYS"/>
+
+                    </HBox>
+
+                    <GridPane
+                        hgap="18"
+                        vgap="18">
+
+                        <columnConstraints>
+
+                            <ColumnConstraints
+                                percentWidth="50"/>
+
+                            <ColumnConstraints
+                                percentWidth="50"/>
+
+                        </columnConstraints>
+
+                        <Label
+                            text="SETOR DESTINATÁRIO"
+                            styleClass="field-label"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="0"/>
+
+                        <Label
+                            text="MEDICAMENTO / ID DO ESTOQUE"
+                            styleClass="field-label"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="0"/>
+
+                        <ComboBox
+                            fx:id="setorComboBox"
+                            prefHeight="40"
+                            promptText="Selecione o setor"
+                            styleClass="field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="1"/>
+
+                        <TextField
+                            fx:id="medicamentoField"
+                            prefHeight="40"
+                            promptText="Digite o ID do estoque"
+                            styleClass="field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="1"/>
+
+                        <Label
+                            text="QUANTIDADE"
+                            styleClass="field-label"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="2"/>
+
+                        <Label
+                            text="MOTIVO / OBSERVAÇÃO"
+                            styleClass="field-label"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="2"/>
+
+                        <TextField
+                            fx:id="quantidadeField"
+                            prefHeight="40"
+                            promptText="Digite a quantidade"
+                            styleClass="field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="3"/>
+
+                        <TextField
+                            fx:id="motivoField"
+                            prefHeight="40"
+                            promptText="Informe o motivo"
+                            styleClass="field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="3"/>
+
+                        <rowConstraints>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                        </rowConstraints>
+
+                    </GridPane>
+
+                    <Label
+                        text="SELEÇÃO DE MEDICAMENTOS"
+                        styleClass="section-title"/>
+
+                    <Label
+                        text="O medicamento é identificado pelo ID do estoque informado acima."
+                        style="-fx-text-fill: #53627A;
+                               -fx-font-size: 13px;"/>
+
+                    <Region
+                        VBox.vgrow="ALWAYS"/>
+
+                </VBox>
+
+                <!-- RESUMO -->
+
+                <VBox
+                    maxWidth="428"
+                    prefWidth="428"
+                    spacing="0"
+                    style="-fx-padding: 27 25 24 25;"
+                    styleClass="summary">
+
+                    <Label
+                        text="RESUMO DA OPERAÇÃO"
+                        styleClass="summary-title"/>
+
+                    <Separator
+                        styleClass="summary-separator">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="21"
+                                top="22"/>
+                        </VBox.margin>
+
+                    </Separator>
+
+                    <Label
+                        text="PROFISSIONAL"
+                        styleClass="summary-label"/>
+
+                    <Label
+                        fx:id="resumoDispensadorLabel"
+                        text="Usuário"
+                        styleClass="summary-value">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="14"
+                                top="4"/>
+                        </VBox.margin>
+
+                    </Label>
+
+                    <Label
+                        text="DATA E HORA"
+                        styleClass="summary-label"/>
+
+                    <Label
+                        fx:id="resumoDataHoraLabel"
+                        text="Será registrada automaticamente"
+                        styleClass="summary-value">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="14"
+                                top="4"/>
+                        </VBox.margin>
+
+                    </Label>
+
+                    <Label
+                        text="DESTINO"
+                        styleClass="summary-label"/>
+
+                    <Label
+                        fx:id="resumoDestinoLabel"
+                        text="Selecione o setor"
+                        styleClass="summary-value">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="14"
+                                top="4"/>
+                        </VBox.margin>
+
+                    </Label>
+
+                    <Separator
+                        styleClass="summary-separator">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="21"
+                                top="21"/>
+                        </VBox.margin>
+
+                    </Separator>
+
+                    <Label
+                        text="ITEM SELECIONADO"
+                        styleClass="summary-label"/>
+
+                    <Label
+                        fx:id="resumoItemLabel"
+                        text="Nenhum item processado"
+                        styleClass="summary-value">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="0"
+                                top="12"/>
+                        </VBox.margin>
+
+                    </Label>
+
+                    <Region
+                        VBox.vgrow="ALWAYS"/>
+
+                    <Button
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="50"
+                        text="Confirmar Saída"
+                        styleClass="confirm-button"
+                        onAction="#confirmarSaida"/>
+
+                    <Button
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="50"
+                        text="Cancelar / Limpar"
+                        styleClass="cancel-button"
+                        onAction="#sair">
+
+                        <VBox.margin>
+                            <Insets top="12"/>
+                        </VBox.margin>
+
+                    </Button>
+
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>
