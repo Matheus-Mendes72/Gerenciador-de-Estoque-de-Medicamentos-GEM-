@@ -1,0 +1,9 @@
+package com.gem.model;
+
+public enum Permissao {
+    CADASTRAR_MEDICAMENTO,
+    ATUALIZAR_MEDICAMENTO,
+    REMOVER_MEDICAMENTO,
+    REGISTRAR_SAIDA,
+    REGISTRAR_RETORNO
+}
