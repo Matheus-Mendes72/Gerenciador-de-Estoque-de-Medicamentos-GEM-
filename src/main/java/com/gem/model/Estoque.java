@@ -29,6 +29,11 @@ public class Estoque {
     public Estoque() {
     }
 
+    public Integer getId() {
+        return this.id;
+    }
+
+
     public String getPrincipioAtivo() {
         return this.principioAtivo;
     }

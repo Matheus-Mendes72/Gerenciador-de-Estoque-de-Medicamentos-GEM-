@@ -1,16 +1,25 @@
-package com.gem.service;
+package com.gem;
 
-import com.gem.model.*;
+import com.gem.model.CargoProfissional;
+import com.gem.model.Estoque;
+import com.gem.model.Historico;
+import com.gem.model.Permissao;
+import com.gem.model.SetorHosp;
+import com.gem.model.TipoMed;
+import com.gem.model.Usuario;
 import com.gem.reps.EstoqueRepository;
 import com.gem.reps.HistoricoRepository;
+import com.gem.service.MovimentacaoService;
+import com.gem.service.PermissaoService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +35,9 @@ class MovimentacaoServiceTest {
     @Mock
     private HistoricoRepository historicoRepository;
 
+    @Mock
+    private PermissaoService permissaoService;
+
     @InjectMocks
     private MovimentacaoService movimentacaoService;
 
@@ -35,11 +47,16 @@ class MovimentacaoServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Inicializa os perfis de usuário conforme a regra do sistema
-        farmaceutico = new Usuario(CargoProfissional.FUNCIONARIO_CAF, "hashHash");
-        coordenador = new Usuario(CargoProfissional.COORDENADOR, "hashHash");
+        farmaceutico = new Usuario(
+                CargoProfissional.FUNCIONARIO_CAF,
+                "hashHash"
+        );
 
-        // Inicializa um item de estoque fictício
+        coordenador = new Usuario(
+                CargoProfissional.COORDENADOR,
+                "hashHash"
+        );
+
         estoque = new Estoque();
         estoque.setPrincipioAtivo("Dipirona");
         estoque.setDose("500mg");
@@ -49,36 +66,105 @@ class MovimentacaoServiceTest {
 
     @Test
     void deveValidarPermissaoERegistrarMovimentacaoDoFarmaceuticoCT10() {
-        // Simula o comportamento do repositório
-        when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoque));
-        when(historicoRepository.save(any(Historico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Executa a saída de medicamentos como Farmacêutico (CT-09 / CT-10)
+        when(estoqueRepository.findById(1))
+                .thenReturn(Optional.of(estoque));
+
+        when(historicoRepository.save(any(Historico.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        doNothing().when(permissaoService)
+                .exigirPermissao(
+                        farmaceutico,
+                        Permissao.REGISTRAR_SAIDA
+                );
+
         Historico historico = movimentacaoService.registrarSaida(
-                1, 5, SetorHosp.EMERGENCIA, "Uso na emergência", farmaceutico
+                farmaceutico,
+                1,
+                5,
+                SetorHosp.EMERGENCIA,
+                "Uso na emergência"
         );
 
-        // Validações do CT-10 (Registro do Farmacêutico: identificação, data e hora)
-        assertNotNull(historico, "O histórico da movimentação não deve ser nulo.");
-        assertEquals(farmaceutico, historico.getUsuario(), "Deve registrar a identificação do usuário profissional.");
-        assertEquals("FUNCIONARIO_CAF", historico.getNomeFunc(), "Deve registrar o nome/cargo do funcionário.");
-        assertNotNull(historico.getDataMov(), "Deve registrar a data da movimentação.");
-        assertEquals(45, estoque.getQuantidade(), "O estoque deve ser atualizado corretamente (50 - 5 = 45).");
-        
-        verify(historicoRepository, times(1)).save(any(Historico.class));
+        assertNotNull(historico);
+        assertEquals(farmaceutico, historico.getUsuario());
+        assertEquals("FUNCIONARIO_CAF", historico.getNomeFunc());
+        assertNotNull(historico.getDataMov());
+        assertEquals(45, estoque.getQuantidade());
+
+        verify(historicoRepository, times(1))
+                .save(any(Historico.class));
     }
 
     @Test
-    void deveBloquearAcessoDeOutrosCargosCT09() {
-        // Tenta realizar uma movimentação restrita usando um cargo sem permissão (CT-09)
-        IllegalArgumentException excecao = assertThrows(
-                IllegalArgumentException.class,
-                () -> movimentacaoService.registrarSaida(1, 5, SetorHosp.EMERGENCIA, "Tentativa indevida", coordenador)
+    void devePermitirSaidaParaCoordenadorUS23() {
+
+        when(estoqueRepository.findById(1))
+                .thenReturn(Optional.of(estoque));
+
+        when(historicoRepository.save(any(Historico.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        doNothing().when(permissaoService)
+                .exigirPermissao(
+                        coordenador,
+                        Permissao.REGISTRAR_SAIDA
+                );
+
+        Historico historico = movimentacaoService.registrarSaida(
+                coordenador,
+                1,
+                5,
+                SetorHosp.EMERGENCIA,
+                "Uso na emergência"
         );
 
-        // Valida que a permissão foi respeitada e o acesso foi barrado
-        assertEquals("Usuário sem permissão para realizar esta operação.", excecao.getMessage());
-        verify(estoqueRepository, never()).findById(anyInt());
-        verify(historicoRepository, never()).save(any(Historico.class));
+        assertNotNull(historico);
+        assertEquals(coordenador, historico.getUsuario());
+        assertEquals("COORDENADOR", historico.getNomeFunc());
+        assertNotNull(historico.getDataMov());
+        assertEquals(45, estoque.getQuantidade());
+
+        verify(historicoRepository, times(1))
+                .save(any(Historico.class));
+    }
+
+    @Test
+    void deveRegistrarSaidaDoTecnicoUS04() {
+
+        Usuario tecnico = new Usuario(
+                CargoProfissional.FUNCIONARIO_SAT,
+                "hashHash"
+        );
+
+        when(estoqueRepository.findById(1))
+                .thenReturn(Optional.of(estoque));
+
+        when(historicoRepository.save(any(Historico.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        doNothing().when(permissaoService)
+                .exigirPermissao(
+                        tecnico,
+                        Permissao.REGISTRAR_SAIDA
+                );
+
+        Historico historico = movimentacaoService.registrarSaida(
+                tecnico,
+                1,
+                5,
+                SetorHosp.EMERGENCIA,
+                "Medicamento utilizado durante o plantão"
+        );
+
+        assertNotNull(historico);
+        assertEquals(tecnico, historico.getUsuario());
+        assertEquals("FUNCIONARIO_SAT", historico.getNomeFunc());
+        assertNotNull(historico.getDataMov());
+        assertEquals(45, estoque.getQuantidade());
+
+        verify(historicoRepository, times(1))
+                .save(any(Historico.class));
     }
 }
