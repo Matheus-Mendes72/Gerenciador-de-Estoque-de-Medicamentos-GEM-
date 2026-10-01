@@ -27,6 +27,11 @@ public class PermissaoService {
                     || permissao == Permissao.ATUALIZAR_MEDICAMENTO;
         }
 
+        if (usuario.getCargo() == CargoProfissional.FUNCIONARIO_SAT) {
+            return permissao == Permissao.REGISTRAR_SAIDA
+                    || permissao == Permissao.REGISTRAR_RETORNO;
+        }
+
         return false;
     }
 
