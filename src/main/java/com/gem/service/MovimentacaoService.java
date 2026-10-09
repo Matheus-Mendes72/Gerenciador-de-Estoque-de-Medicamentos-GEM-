@@ -77,6 +77,14 @@ public class MovimentacaoService {
         return historicoRepository.save(historico);
     }
 
+    public boolean podeAcessarRetorno(Usuario usuario) {
+        return permissaoService.podeAcessarRetorno(usuario);
+    }
+
+    public void validarAcessoRetorno(Usuario usuario) {
+        permissaoService.exigirAcessoRetorno(usuario);
+    }
+
     @Transactional
     public Historico registrarRetorno(
             Usuario usuario,
@@ -85,10 +93,34 @@ public class MovimentacaoService {
             SetorHosp setor,
             String motivo) {
 
+        return registrarRetorno(usuario, estoqueId, quantidade, setor, motivo, null);
+    }
+
+    @Transactional
+    public Historico registrarRetorno(
+            Usuario usuario,
+            Integer estoqueId,
+            Integer quantidade,
+            SetorHosp setor,
+            String motivo,
+            String identificacaoProfissional) {
+
+        if (usuario == null) {
+            throw new IllegalArgumentException(
+                    "Usuário não autenticado."
+            );
+        }
+
         permissaoService.exigirPermissao(
                 usuario,
                 Permissao.REGISTRAR_RETORNO
         );
+
+        if (setor == null) {
+            throw new IllegalArgumentException(
+                    "O setor de origem do retorno é obrigatório."
+            );
+        }
 
         Estoque estoque = buscarEstoque(estoqueId);
 
@@ -111,10 +143,27 @@ public class MovimentacaoService {
                 quantidadePre,
                 quantidadePos,
                 setor,
-                motivo
+                motivo,
+                identificacaoProfissional
         );
 
         return historicoRepository.save(historico);
+    }
+
+    public java.util.List<Historico> listarRetornosPorUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+            return java.util.Collections.emptyList();
+        }
+        return historicoRepository.findByTipoMovAndUsuarioIdOrderByDataMovDesc(
+                TipoMov.RETORNO,
+                usuario.getId()
+        );
+    }
+
+    public java.util.List<Historico> listarTodosRetornos() {
+        return historicoRepository.findByTipoMovOrderByDataMovDesc(
+                TipoMov.RETORNO
+        );
     }
 
     private Estoque buscarEstoque(Integer id) {
@@ -146,6 +195,30 @@ public class MovimentacaoService {
             SetorHosp setor,
             String motivo) {
 
+        return criarHistorico(
+                usuario,
+                estoque,
+                tipoMov,
+                quantidade,
+                quantidadePre,
+                quantidadePos,
+                setor,
+                motivo,
+                null
+        );
+    }
+
+    private Historico criarHistorico(
+            Usuario usuario,
+            Estoque estoque,
+            TipoMov tipoMov,
+            Integer quantidade,
+            Integer quantidadePre,
+            Integer quantidadePos,
+            SetorHosp setor,
+            String motivo,
+            String identificacaoProfissional) {
+
         Historico historico = new Historico();
 
         historico.setTipoMov(tipoMov);
@@ -155,14 +228,11 @@ public class MovimentacaoService {
         historico.setUsuario(usuario);
         historico.setSetorHosp(setor);
 
-        /*
-         * O ID do usuário é a identificação real do profissional.
-         * nomeFunc deve seguir o que vocês definiram no modelo.
-         */
-        historico.setNomeFunc(
-                usuario.getCargo().name()
-        );
+        String identificacao = (identificacaoProfissional != null && !identificacaoProfissional.isBlank())
+                ? identificacaoProfissional
+                : (usuario.getCargo() != null ? usuario.getCargo().name() : "USUARIO");
 
+        historico.setNomeFunc(identificacao);
         historico.setMotivoObs(motivo);
         historico.setQuantidadePre(quantidadePre);
         historico.setQuantidadePos(quantidadePos);

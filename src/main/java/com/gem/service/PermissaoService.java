@@ -45,4 +45,16 @@ public class PermissaoService {
             );
         }
     }
+
+    public boolean podeAcessarRetorno(Usuario usuario) {
+        return possuiPermissao(usuario, Permissao.REGISTRAR_RETORNO);
+    }
+
+    public void exigirAcessoRetorno(Usuario usuario) {
+        if (!podeAcessarRetorno(usuario)) {
+            throw new SecurityException(
+                "Acesso negado: Usuário sem permissão para acessar a funcionalidade de retorno de medicamentos."
+            );
+        }
+    }
 }
