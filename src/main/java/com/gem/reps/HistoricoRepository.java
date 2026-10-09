@@ -11,5 +11,4 @@ import java.util.List;
 public interface HistoricoRepository extends JpaRepository<Historico, Integer> {
     List<Historico> findByTipoMovOrderByDataMovDesc(TipoMov tipoMov);
     List<Historico> findByUsuarioIdOrderByDataMovDesc(Integer usuarioId);
-    List<Historico> findByTipoMovAndUsuarioIdOrderByDataMovDesc(TipoMov tipoMov, Integer usuarioId);
 }
