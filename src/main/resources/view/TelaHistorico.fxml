@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.view.HistoricoViewController"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <style>
+        .root {
+            -fx-font-family: "Arial";
+            -fx-background-color: #F5F7FA;
+        }
+
+        .sidebar {
+            -fx-background-color: #002D73;
+        }
+
+        .sidebar-separator {
+            -fx-background-color: rgba(255,255,255,0.25);
+        }
+
+        .nav-button {
+            -fx-background-color: #002D73;
+            -fx-background-radius: 0;
+            -fx-text-fill: #B7C5DB;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-alignment: CENTER_LEFT;
+            -fx-padding: 0 20 0 20;
+            -fx-cursor: hand;
+        }
+
+        .nav-button:hover {
+            -fx-background-color: #174A8A;
+        }
+
+        .nav-button-active {
+            -fx-background-color: #66BB6A;
+            -fx-text-fill: white;
+        }
+
+        .sidebar-user {
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+        }
+
+        .page-title {
+            -fx-text-fill: #0D3B82;
+            -fx-font-size: 26px;
+            -fx-font-weight: bold;
+        }
+
+        .page-subtitle {
+            -fx-text-fill: #53627A;
+            -fx-font-size: 14px;
+        }
+
+        .access-badge {
+            -fx-background-color: #D2F6F0;
+            -fx-background-radius: 7;
+            -fx-text-fill: #176A69;
+            -fx-font-size: 13px;
+            -fx-font-weight: bold;
+            -fx-padding: 7 14 7 14;
+        }
+
+        .filter-card {
+            -fx-background-color: white;
+            -fx-background-radius: 14;
+            -fx-border-color: #D9E1EC;
+            -fx-border-width: 1.2;
+            -fx-border-radius: 14;
+        }
+
+        .filter-label {
+            -fx-text-fill: #53627A;
+            -fx-font-size: 12px;
+            -fx-font-weight: bold;
+        }
+
+        .field {
+            -fx-background-color: white;
+            -fx-background-radius: 7;
+            -fx-border-color: #D9E1EC;
+            -fx-border-radius: 7;
+            -fx-text-fill: #123D78;
+            -fx-font-size: 14px;
+            -fx-padding: 0 12 0 12;
+        }
+
+        .filter-button {
+            -fx-background-color: #1976D2;
+            -fx-background-radius: 7;
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        }
+
+        .clear-button {
+            -fx-background-color: transparent;
+            -fx-background-radius: 7;
+            -fx-border-color: #D9E1EC;
+            -fx-border-radius: 7;
+            -fx-text-fill: #53627A;
+            -fx-font-size: 14px;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        }
+
+        .table-card {
+            -fx-background-color: white;
+            -fx-background-radius: 14;
+            -fx-border-color: #1976D2;
+            -fx-border-width: 1.2;
+            -fx-border-radius: 14;
+        }
+
+        .section-title {
+            -fx-text-fill: #0D3B82;
+            -fx-font-size: 15px;
+            -fx-font-weight: bold;
+        }
+    </style>
+
+    <!-- MENU LATERAL -->
+
+    <left>
+
+        <VBox
+            prefWidth="277.0"
+            styleClass="sidebar">
+
+            <VBox
+                spacing="18"
+                style="-fx-padding: 25 17 0 17;
+                       -fx-background-color: #002D73;">
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <ImageView
+                        fitHeight="68.0"
+                        fitWidth="200.0"
+                        preserveRatio="true">
+
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+
+                    </ImageView>
+
+                </HBox>
+
+                <Separator styleClass="sidebar-separator"/>
+
+            </VBox>
+
+            <Region
+                style="-fx-background-color: #002D73;"
+                VBox.vgrow="ALWAYS"/>
+
+            <VBox
+                prefWidth="277.0"
+                spacing="5.0"
+                style="-fx-background-color: #002D73;">
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="MOVIMENTAÇÃO"
+                    onAction="#abrirMovimentacao"
+                    styleClass="nav-button"/>
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="HISTÓRICO"
+                    styleClass="nav-button, nav-button-active"/>
+
+            </VBox>
+
+            <Region
+                style="-fx-background-color: #002D73;"
+                VBox.vgrow="ALWAYS"/>
+
+            <VBox
+                spacing="16"
+                style="-fx-padding: 0 17 24 17;
+                       -fx-background-color: #002D73;">
+
+                <Separator styleClass="sidebar-separator"/>
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <Label
+                        alignment="CENTER"
+                        prefHeight="43"
+                        prefWidth="43"
+                        style="-fx-background-color:#526D96;
+                               -fx-background-radius:50%;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;"
+                        text="GEM"/>
+
+                    <Label
+                        fx:id="usuarioLabel"
+                        styleClass="sidebar-user"
+                        text="Coordenador"/>
+
+                </HBox>
+
+                <Button
+                    text="Sair do sistema"
+                    onAction="#sair"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+            </VBox>
+
+        </VBox>
+
+    </left>
+
+    <!-- ÁREA PRINCIPAL -->
+
+    <center>
+
+        <VBox
+            spacing="20"
+            style="-fx-padding: 48 36 35 34;">
+
+            <!-- CABEÇALHO -->
+
+            <HBox alignment="CENTER_LEFT">
+
+                <VBox
+                    prefWidth="566.0"
+                    spacing="6">
+
+                    <Label
+                        text="Histórico de Movimentações"
+                        styleClass="page-title"/>
+
+                    <Label
+                        text="Consulte e filtre todas as movimentações registradas no estoque"
+                        styleClass="page-subtitle"/>
+
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label
+                    styleClass="access-badge"
+                    text="Acesso: Coordenador"/>
+
+            </HBox>
+
+            <Separator/>
+
+            <!-- CARD DE FILTROS -->
+
+            <VBox
+                spacing="12"
+                style="-fx-padding: 20 24 20 24;"
+                styleClass="filter-card">
+
+                <Label
+                    text="FILTROS"
+                    styleClass="section-title"/>
+
+                <GridPane hgap="16" vgap="10">
+
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="20"/>
+                        <ColumnConstraints percentWidth="20"/>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="10"/>
+                    </columnConstraints>
+
+                    <!-- Labels -->
+
+                    <Label
+                        text="TIPO DE MOVIMENTAÇÃO"
+                        styleClass="filter-label"
+                        GridPane.columnIndex="0"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="DATA INICIAL"
+                        styleClass="filter-label"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="DATA FINAL"
+                        styleClass="filter-label"
+                        GridPane.columnIndex="2"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="PRINCÍPIO ATIVO"
+                        styleClass="filter-label"
+                        GridPane.columnIndex="3"
+                        GridPane.rowIndex="0"/>
+
+                    <!-- Campos -->
+
+                    <ComboBox
+                        fx:id="tipoMovComboBox"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="Todos os tipos"
+                        styleClass="field"
+                        GridPane.columnIndex="0"
+                        GridPane.rowIndex="1"/>
+
+                    <DatePicker
+                        fx:id="dataInicioDatePicker"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="dd/mm/aaaa"
+                        styleClass="field"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="1"/>
+
+                    <DatePicker
+                        fx:id="dataFimDatePicker"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="dd/mm/aaaa"
+                        styleClass="field"
+                        GridPane.columnIndex="2"
+                        GridPane.rowIndex="1"/>
+
+                    <TextField
+                        fx:id="principioAtivoField"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="Ex: Dipirona"
+                        styleClass="field"
+                        GridPane.columnIndex="3"
+                        GridPane.rowIndex="1"/>
+
+                    <!-- Botões empilhados na última coluna -->
+
+                    <VBox
+                        spacing="6"
+                        GridPane.columnIndex="4"
+                        GridPane.rowIndex="0"
+                        GridPane.rowSpan="2"
+                        GridPane.valignment="BOTTOM">
+
+                        <Button
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="40"
+                            text="Filtrar"
+                            onAction="#filtrar"
+                            styleClass="filter-button"/>
+
+                        <Button
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="40"
+                            text="Limpar"
+                            onAction="#limpar"
+                            styleClass="clear-button"/>
+
+                    </VBox>
+
+                </GridPane>
+
+            </VBox>
+
+            <!-- TABELA DE HISTÓRICO -->
+
+            <VBox
+                spacing="12"
+                style="-fx-padding: 20 24 20 24;"
+                styleClass="table-card"
+                VBox.vgrow="ALWAYS">
+
+                <Label
+                    text="REGISTROS DE MOVIMENTAÇÃO"
+                    styleClass="section-title"/>
+
+                <TableView
+                    fx:id="historicoTable"
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-background-color: transparent;
+                           -fx-border-color: transparent;">
+
+                    <columns>
+
+                        <TableColumn
+                            fx:id="tipoMovColumn"
+                            text="Tipo"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="medicamentoColumn"
+                            text="Medicamento"
+                            prefWidth="220"/>
+
+                        <TableColumn
+                            fx:id="quantidadeColumn"
+                            text="Quantidade"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="dataHoraColumn"
+                            text="Data / Hora"
+                            prefWidth="160"/>
+
+                        <TableColumn
+                            fx:id="profissionalColumn"
+                            text="Profissional"
+                            prefWidth="140"/>
+
+                        <TableColumn
+                            fx:id="setorColumn"
+                            text="Setor de Destino"
+                            prefWidth="160"/>
+
+                        <TableColumn
+                            fx:id="qtdAntesColumn"
+                            text="Qtd. Antes"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="qtdDepoisColumn"
+                            text="Qtd. Depois"
+                            prefWidth="110"/>
+
+                    </columns>
+
+                    <placeholder>
+                        <Label
+                            text="Nenhuma movimentação encontrada para os filtros aplicados."
+                            style="-fx-text-fill: #53627A; -fx-font-size: 14px;"/>
+                    </placeholder>
+
+                </TableView>
+
+            </VBox>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>

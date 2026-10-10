@@ -59,6 +59,30 @@ public class CoordenadorViewController {
     }
 
     @FXML
+    private void abrirHistorico() {
+
+        if (!validarCoordenadorSilenciosamente()) {
+            return;
+        }
+
+        try {
+
+            Stage stage =
+                    (Stage) root.getScene().getWindow();
+
+            viewManager.mostrarHistorico(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o histórico."
+            );
+        }
+    }
+
+    @FXML
     private void sair() {
 
         sessaoUsuario.encerrar();
