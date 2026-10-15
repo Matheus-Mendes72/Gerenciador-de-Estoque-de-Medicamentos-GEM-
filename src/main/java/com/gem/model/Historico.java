@@ -34,6 +34,8 @@ public class Historico {
 
     @Column(name = "nome_func", nullable = false, length = 50)
     private String nomeFunc;
+    @Column(name = "medico_prescritor", nullable = false, length = 100)
+    private String medicoPrescritor;
     @Column(name = "motivo_obs", length = 100)
     private String motivoObs;
     @Column(name = "quantidade_pre", nullable = false)
@@ -65,6 +67,12 @@ public class Historico {
     }
     public String getNomeFunc() {
         return nomeFunc;
+    }
+    public String getMedicoPrescritor() {
+        return medicoPrescritor;
+    }
+    public void setMedicoPrescritor(String medicoPrescritor) {
+        this.medicoPrescritor = medicoPrescritor;
     }
     public String getMotivoObs() {
         return motivoObs;
