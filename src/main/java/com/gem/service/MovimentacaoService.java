@@ -90,6 +90,12 @@ public class MovimentacaoService {
                 Permissao.REGISTRAR_RETORNO
         );
 
+        if (setor == null) {
+            throw new IllegalArgumentException(
+                    "O setor de origem do retorno é obrigatório."
+            );
+        }
+
         Estoque estoque = buscarEstoque(estoqueId);
 
         validarQuantidade(quantidade);
@@ -160,7 +166,9 @@ public class MovimentacaoService {
          * nomeFunc deve seguir o que vocês definiram no modelo.
          */
         historico.setNomeFunc(
-                usuario.getCargo().name()
+                usuario != null && usuario.getCargo() != null
+                        ? usuario.getCargo().name()
+                        : "USUARIO"
         );
 
         historico.setMotivoObs(motivo);
