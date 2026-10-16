@@ -93,6 +93,51 @@ public class ViewManager {
         stage.show();
     }
 
+    public void mostrarEstoque(Stage stage) throws IOException {
+
+        FXMLLoader loader =
+                criarLoader("/view/TelaEstoque.fxml");
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+        stage.setTitle("GEM - Estoque de Medicamentos");
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public void mostrarCadastroMedicamento(Stage stage) throws IOException {
+
+        FXMLLoader loader =
+                criarLoader("/view/TelaCadastroMedicamento.fxml");
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+        stage.setTitle("GEM - Cadastro de Medicamentos");
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public void mostrarRemoverMedicamento(Stage stage) throws IOException {
+
+        FXMLLoader loader =
+                criarLoader("/view/TelaRemoverMedicamento.fxml");
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+        stage.setTitle("GEM - Remoção de Medicamentos");
+        stage.setResizable(false);
+        stage.show();
+    }
+
     private FXMLLoader criarLoader(String caminho) {
 
         FXMLLoader loader =

@@ -173,6 +173,21 @@ public class HistoricoViewController {
     }
 
     @FXML
+    private void abrirEstoque() {
+
+        try {
+
+            Stage stage = (Stage) usuarioLabel.getScene().getWindow();
+            viewManager.mostrarEstoque(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            mostrarErro("Não foi possível abrir a tela de estoque.");
+        }
+    }
+
+    @FXML
     private void sair() {
 
         sessaoUsuario.encerrar();

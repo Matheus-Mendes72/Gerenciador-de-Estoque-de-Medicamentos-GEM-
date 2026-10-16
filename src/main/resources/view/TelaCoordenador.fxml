@@ -57,6 +57,7 @@
                     maxWidth="Infinity"
                     prefHeight="44.0"
                     text="📦  Estoque"
+                    onAction="#abrirEstoque"
                     styleClass="sidebar-nav-btn"/>
 
                 <Button

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.view.EstoqueViewController"
+    stylesheets="@movimentacao.css"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <!-- ======================================================================
+         SIDEBAR (Menu Lateral do Coordenador)
+         ====================================================================== -->
+    <left>
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <!-- Logo Header -->
+            <VBox styleClass="sidebar-logo-container" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="48.0" fitWidth="170.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+                <Separator styleClass="sidebar-separator"/>
+            </VBox>
+
+            <!-- Navigation Links (Apenas Movimentação, Estoque e Histórico) -->
+            <VBox spacing="8" styleClass="sidebar-nav-container">
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="⇄  Movimentação"
+                    onAction="#abrirMovimentacao"
+                    styleClass="sidebar-nav-btn"/>
+
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="📦  Estoque"
+                    styleClass="sidebar-nav-btn, sidebar-nav-btn-active"/>
+
+                <Button
+                    fx:id="btnHistorico"
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="🕒  Histórico"
+                    onAction="#abrirHistorico"
+                    styleClass="sidebar-nav-btn"/>
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- User Footer Widget -->
+            <VBox spacing="14" styleClass="sidebar-footer">
+                <Separator styleClass="sidebar-separator"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label
+                        fx:id="sidebarAvatarLabel"
+                        prefHeight="42.0"
+                        prefWidth="42.0"
+                        minHeight="42.0"
+                        minWidth="42.0"
+                        text="CO"
+                        styleClass="sidebar-avatar"/>
+
+                    <VBox alignment="CENTER_LEFT" spacing="2" HBox.hgrow="ALWAYS">
+                        <Label
+                            fx:id="usuarioLabel"
+                            text="Coordenador"
+                            styleClass="sidebar-user-name"/>
+                        <Label
+                            text="Coordenação Geral"
+                            styleClass="sidebar-user-role"/>
+                    </VBox>
+
+                    <Button
+                        text="➔"
+                        onAction="#sair"
+                        styleClass="sidebar-logout-btn"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ======================================================================
+         ÁREA PRINCIPAL (Estoque de Medicamentos)
+         ====================================================================== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30 36 28 36;">
+
+            <!-- Header Principal -->
+            <HBox alignment="CENTER_LEFT" styleClass="main-header">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Estoque de medicamentos" styleClass="header-title"/>
+                    <Label text="Cadastre, atualize e gerencie os itens disponíveis." styleClass="header-subtitle"/>
+                </VBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <VBox alignment="CENTER_RIGHT" spacing="2">
+                        <Label fx:id="headerNomeLabel" text="Coordenador" style="-fx-text-fill: #0F172A; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <Label fx:id="headerCargoLabel" text="Coordenação Geral" style="-fx-text-fill: #64748B; -fx-font-size: 11px;"/>
+                    </VBox>
+                    <Label fx:id="headerAvatarLabel" prefHeight="38.0" prefWidth="38.0" text="CO" styleClass="header-avatar"/>
+                </HBox>
+            </HBox>
+
+            <!-- Barra de Ações (Busca + Botão Cadastrar Medicamento) -->
+            <HBox spacing="16" alignment="CENTER_LEFT">
+
+                <!-- Campo de Busca Estilizado -->
+                <HBox styleClass="search-field-container" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS" prefHeight="44.0">
+                    <Label text="🔍" style="-fx-text-fill: #94A3B8; -fx-font-size: 14px;"/>
+                    <TextField
+                        fx:id="campoBusca"
+                        promptText="Buscar por medicamento ou lote..."
+                        styleClass="search-field-input"
+                        HBox.hgrow="ALWAYS"
+                        prefHeight="40.0"/>
+                </HBox>
+
+                <!-- Botão de Cadastrar Medicamento -->
+                <Button
+                    fx:id="btnCadastrarMedicamento"
+                    text="+ Cadastrar medicamento"
+                    onAction="#abrirCadastroMedicamento"
+                    prefHeight="44.0"
+                    styleClass="btn-cadastrar-estoque"/>
+
+            </HBox>
+
+            <!-- Card de Inventário Atual -->
+            <VBox styleClass="form-card" spacing="16" VBox.vgrow="ALWAYS">
+
+                <!-- Sub-cabeçalho do Card -->
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Inventário atual" styleClass="form-section-title"/>
+                        <Label fx:id="totalMedicamentosLabel" text="Carregando medicamentos..." style="-fx-text-fill: #64748B; -fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <Label text="Atualizado agora" styleClass="badge-atualizado-agora"/>
+                </HBox>
+
+                <Separator styleClass="summary-divider"/>
+
+                <!-- Tabela de Itens em Estoque -->
+                <TableView
+                    fx:id="estoqueTable"
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+
+                    <columns>
+                        <TableColumn
+                            fx:id="medicamentoColumn"
+                            text="MEDICAMENTO"
+                            prefWidth="300.0"/>
+
+                        <TableColumn
+                            fx:id="categoriaColumn"
+                            text="CATEGORIA"
+                            prefWidth="180.0"/>
+
+                        <TableColumn
+                            fx:id="estoqueColumn"
+                            text="ESTOQUE"
+                            prefWidth="140.0"/>
+
+                        <TableColumn
+                            fx:id="loteColumn"
+                            text="LOTE"
+                            prefWidth="180.0"/>
+
+                        <TableColumn
+                            fx:id="statusColumn"
+                            text="STATUS"
+                            prefWidth="140.0"/>
+
+                        <TableColumn
+                            fx:id="acoesColumn"
+                            text="AÇÕES"
+                            prefWidth="140.0"/>
+                    </columns>
+
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+
+                </TableView>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

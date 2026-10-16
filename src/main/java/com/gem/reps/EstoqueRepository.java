@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface EstoqueRepository extends JpaRepository<Estoque, Integer> {
     List<Estoque> findByPrincipioAtivoIgnoreCase(String principioAtivo);
     Optional<Estoque> findFirstByPrincipioAtivoIgnoreCase(String principioAtivo);
+    List<Estoque> findByMedicamentoIdOrderByIdAsc(Integer medicamentoId);
 }
