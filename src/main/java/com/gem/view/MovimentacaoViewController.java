@@ -257,6 +257,28 @@ public class MovimentacaoViewController {
         }
     }
 
+    @FXML
+    private void abrirHistorico() {
+
+        try {
+
+            Stage stage =
+                    (Stage) usuarioLabel
+                            .getScene()
+                            .getWindow();
+
+            viewManager.mostrarHistorico(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o histórico."
+            );
+        }
+    }
+
     private Integer obterEstoqueId() {
 
         String texto =

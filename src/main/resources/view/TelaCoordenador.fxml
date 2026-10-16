@@ -63,6 +63,7 @@
                     maxWidth="Infinity"
                     prefHeight="44.0"
                     text="🕒  Histórico"
+                    onAction="#abrirHistorico"
                     styleClass="sidebar-nav-btn"/>
             </VBox>
 
