@@ -104,15 +104,15 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="12">
                     <Label fx:id="acessoLabel" text="Acesso: Técnico de Enfermagem" styleClass="header-profile-badge"/>
-                    <Label prefHeight="38.0" prefWidth="38.0" text="GEM" styleClass="header-avatar"/>
+                    <Label prefHeight="38.0" prefWidth="38.0" text="SAT" styleClass="header-avatar"/>
                 </HBox>
             </HBox>
 
-            <!-- Cards de Seleção de Operação (Saída / Retorno) -->
+            <!-- Cards Superiores de Ação (Dispensação e Retorno) -->
             <HBox spacing="18">
                 <Button
                     prefHeight="64.0"
-                    text="➔  Saída de medicamento&#10;     Dispensar item do estoque"
+                    text="➔  Dispensação de Medicamento&#10;     Registrar saída de item do estoque"
                     onAction="#confirmarSaida"
                     styleClass="op-button, op-card-dispensa"
                     HBox.hgrow="ALWAYS"
@@ -120,7 +120,7 @@
 
                 <Button
                     prefHeight="64.0"
-                    text="↺  Retorno ao estoque&#10;     Devolver item não utilizado"
+                    text="↺  Retorno ao Estoque&#10;     Registrar devolução de item não utilizado"
                     onAction="#confirmarRetorno"
                     styleClass="op-button, op-card-retorno"
                     HBox.hgrow="ALWAYS"
@@ -130,20 +130,20 @@
             <!-- Linha Principal de Conteúdo (Formulário + Resumo) -->
             <HBox spacing="24" VBox.vgrow="ALWAYS">
 
-                <!-- PAINEL CENTRAL (Formulário) -->
+                <!-- PAINEL CENTRAL (Formulário com os 4 campos reais do sistema) -->
                 <VBox styleClass="form-card" spacing="18" HBox.hgrow="ALWAYS">
-                    <Label text="Dados da dispensação / movimentação" styleClass="form-section-title"/>
+                    <Label text="Dados da Movimentação" styleClass="form-section-title"/>
 
-                    <!-- Grid de Campos Principais -->
-                    <GridPane hgap="18" vgap="12">
+                    <!-- Grid de Campos Reais -->
+                    <GridPane hgap="18" vgap="14">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="50"/>
                             <ColumnConstraints percentWidth="50"/>
                         </columnConstraints>
 
-                        <!-- Linha 1 -->
+                        <!-- Linha 1: Setor e Medicamento -->
                         <Label text="SETOR DESTINATÁRIO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label text="PROFISSIONAL RESPONSÁVEL" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                         <ComboBox
                             fx:id="setorComboBox"
@@ -154,35 +154,33 @@
                             GridPane.columnIndex="0"
                             GridPane.rowIndex="1"/>
 
-                        <VBox spacing="3" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <TextField
-                                editable="false"
-                                prefHeight="40.0"
-                                promptText="Preenchido pela autenticação"
-                                styleClass="readonly-field"/>
-                            <Label text="Preenchido pela autenticação" styleClass="field-sublabel"/>
-                        </VBox>
+                        <TextField
+                            fx:id="medicamentoField"
+                            prefHeight="40.0"
+                            promptText="Digite o ID do estoque (ex: 1)"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="1"/>
 
-                        <!-- Linha 2 -->
-                        <Label text="MÉDICO PRESCRITOR / OBSERVAÇÃO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label text="DATA E HORA" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <!-- Linha 2: Quantidade e Motivo/Observação -->
+                        <Label text="QUANTIDADE" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label text="MOTIVO / OBSERVAÇÃO" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                         <TextField
-                            fx:id="motivoField"
+                            fx:id="quantidadeField"
                             prefHeight="40.0"
-                            promptText="Dra. Beatriz Lima / Motivo da movimentação"
+                            promptText="Digite a quantidade"
                             styleClass="text-input-field"
                             GridPane.columnIndex="0"
                             GridPane.rowIndex="3"/>
 
-                        <HBox alignment="CENTER_LEFT" spacing="6" styleClass="readonly-field" prefHeight="40.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                            <TextField
-                                editable="false"
-                                promptText="Registrada automaticamente na confirmação"
-                                HBox.hgrow="ALWAYS"
-                                style="-fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #64748B;"/>
-                            <Label text="📅" style="-fx-text-fill: #64748B; -fx-font-size: 14px;"/>
-                        </HBox>
+                        <TextField
+                            fx:id="motivoField"
+                            prefHeight="40.0"
+                            promptText="Informe o motivo ou observação"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="3"/>
 
                         <rowConstraints>
                             <RowConstraints/>
@@ -192,64 +190,25 @@
                         </rowConstraints>
                     </GridPane>
 
-                    <Separator styleClass="summary-divider">
-                        <VBox.margin>
-                            <Insets top="4" bottom="4"/>
-                        </VBox.margin>
-                    </Separator>
-
-                    <!-- Seção Medicamentos -->
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Medicamentos" styleClass="form-section-title"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="1 item selecionado" styleClass="badge-pill"/>
-                    </HBox>
-
-                    <!-- Linha de Seleção do Medicamento e Quantidade -->
-                    <HBox spacing="14" alignment="BOTTOM_LEFT">
-                        <VBox spacing="6" HBox.hgrow="ALWAYS">
-                            <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label"/>
-                            <TextField
-                                fx:id="medicamentoField"
-                                prefHeight="40.0"
-                                promptText="Digite o ID do medicamento no estoque (ex: 1)"
-                                styleClass="text-input-field"/>
-                        </VBox>
-
-                        <VBox spacing="6" prefWidth="130.0">
-                            <Label text="QUANTIDADE" styleClass="field-label"/>
-                            <TextField
-                                fx:id="quantidadeField"
-                                prefHeight="40.0"
-                                promptText="Ex: 12"
-                                styleClass="text-input-field"/>
-                        </VBox>
-                    </HBox>
-
                     <!-- Campo legado oculto para compatibilidade total -->
                     <TextField fx:id="setorField" visible="false" managed="false"/>
-
-                    <Button
-                        text="+ Adicionar outro medicamento"
-                        styleClass="action-add-btn"/>
 
                     <Region VBox.vgrow="ALWAYS"/>
                 </VBox>
 
-                <!-- PAINEL LATERAL DIREITO (Resumo da Operação onde ele realiza a movimentação) -->
+                <!-- PAINEL LATERAL DIREITO (Resumo da Operação Real) -->
                 <VBox styleClass="summary-card" prefWidth="380.0" minWidth="360.0" spacing="16">
                     <Label text="Resumo da Operação" styleClass="summary-title"/>
 
                     <Separator styleClass="summary-divider"/>
 
-                    <!-- Responsável -->
+                    <!-- Responsável Real -->
                     <VBox spacing="3">
-                        <Label text="RESPONSÁVEL" styleClass="summary-caption"/>
+                        <Label text="PROFISSIONAL" styleClass="summary-caption"/>
                         <Label fx:id="resumoDispensadorLabel" text="Técnico de Enfermagem" styleClass="summary-primary-text"/>
-                        <Label text="Profissional Autenticado" styleClass="summary-secondary-text"/>
                     </VBox>
 
-                    <!-- Destino & Data/Hora lado a lado -->
+                    <!-- Destino & Data/Hora Reais -->
                     <HBox spacing="18">
                         <VBox spacing="3" HBox.hgrow="ALWAYS">
                             <Label text="DESTINO" styleClass="summary-caption"/>
@@ -258,15 +217,15 @@
 
                         <VBox spacing="3" HBox.hgrow="ALWAYS">
                             <Label text="DATA E HORA" styleClass="summary-caption"/>
-                            <Label fx:id="resumoDataHoraLabel" text="Será registrada automaticamente" styleClass="summary-secondary-text"/>
+                            <Label fx:id="resumoDataHoraLabel" text="Registrada automaticamente" styleClass="summary-secondary-text"/>
                         </VBox>
                     </HBox>
 
                     <Separator styleClass="summary-divider"/>
 
-                    <!-- Itens Selecionados -->
+                    <!-- Item Processado Real -->
                     <VBox spacing="6">
-                        <Label text="ITENS SELECIONADOS" styleClass="summary-caption"/>
+                        <Label text="ITEM PROCESSADO" styleClass="summary-caption"/>
                         <Label fx:id="resumoItemLabel" text="Nenhum item processado" styleClass="summary-item-name"/>
                     </VBox>
 
