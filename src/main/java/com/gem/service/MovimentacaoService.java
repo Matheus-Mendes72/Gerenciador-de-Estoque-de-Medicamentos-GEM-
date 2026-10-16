@@ -142,6 +142,12 @@ public class MovimentacaoService {
                 Permissao.REGISTRAR_RETORNO
         );
 
+        if (setor == null) {
+            throw new IllegalArgumentException(
+                    "O setor de origem do retorno é obrigatório."
+            );
+        }
+
         Estoque estoque = buscarEstoque(estoqueId);
 
         validarQuantidade(quantidade);
