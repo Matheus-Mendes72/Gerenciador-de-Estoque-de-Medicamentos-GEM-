@@ -1,27 +1,26 @@
+
 package com.gem.model;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
-@Entity 
+@Entity
 @Table(name = "estoque")
 public class Estoque {
-    @Id 
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "principio_ativo", nullable = false, length = 50)
-    private String principioAtivo;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_medicamento", nullable = false)
+    private Medicamento medicamento;
 
-    @Column(nullable = false, length = 50)
-    private String dose;
+    // @Column(name = "lote", nullable = false, length = 50)
+    // private String lote;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(name = "tipo_med", nullable = false, columnDefinition = "tipo_med")
-    private TipoMed tipoMed;
+    // @Column(name = "data_validade", nullable = false)
+    // private LocalDate dataValidade;
 
     @Column(nullable = false)
     private Integer quantidade;
@@ -30,37 +29,36 @@ public class Estoque {
     }
 
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
-
-    public String getPrincipioAtivo() {
-        return this.principioAtivo;
+    public Medicamento getMedicamento() {
+        return medicamento;
     }
 
-    public String getDose() {
-        return this.dose;
-    }
+    // public String getLote() {
+    //     return lote;
+    // }
 
-    public TipoMed getTipoMed() {
-        return this.tipoMed;
-    }
+    // public LocalDate getDataValidade() {
+    //     return dataValidade;
+    // }
 
     public Integer getQuantidade() {
-        return this.quantidade;
+        return quantidade;
     }
 
-    public void setPrincipioAtivo(String principioAtivo) {
-        this.principioAtivo = principioAtivo;
+    public void setMedicamento(Medicamento medicamento) {
+        this.medicamento = medicamento;
     }
 
-    public void setDose(String dose) {
-        this.dose = dose;
-    }
+    // public void setLote(String lote) {
+    //     this.lote = lote;
+    // }
 
-    public void setTipoMed(TipoMed tipoMed) {
-        this.tipoMed = tipoMed;
-    }
+    // public void setDataValidade(LocalDate dataValidade) {
+    //     this.dataValidade = dataValidade;
+    // }
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;

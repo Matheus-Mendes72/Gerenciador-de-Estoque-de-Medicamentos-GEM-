@@ -1,8 +1,10 @@
+
 package com.gem;
 
 import com.gem.model.CargoProfissional;
 import com.gem.model.Estoque;
 import com.gem.model.Historico;
+import com.gem.model.Medicamento;
 import com.gem.model.Permissao;
 import com.gem.model.SetorHosp;
 import com.gem.model.TipoMed;
@@ -57,10 +59,14 @@ class MovimentacaoServiceTest {
                 "hashHash"
         );
 
+        Medicamento medicamento = new Medicamento();
+        medicamento.setPrincipioAtivo("Dipirona");
+        medicamento.setDose("500mg");
+        medicamento.setTipoMed(TipoMed.CONTROLADO);
+        medicamento.setAtivo(true);
+
         estoque = new Estoque();
-        estoque.setPrincipioAtivo("Dipirona");
-        estoque.setDose("500mg");
-        estoque.setTipoMed(TipoMed.CONTROLADO);
+        estoque.setMedicamento(medicamento);
         estoque.setQuantidade(50);
     }
 

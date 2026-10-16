@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.controller.RemoverMedicamentoController"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <stylesheets>
+        <URL value="@gem.css"/>
+    </stylesheets>
+
+    <!-- MENU LATERAL -->
+
+    <left>
+
+        <VBox
+            minWidth="277.0"
+            prefWidth="277.0"
+            styleClass="sidebar">
+
+            <VBox
+                spacing="18"
+                styleClass="sidebar-top">
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <ImageView
+                        fitHeight="68.0"
+                        fitWidth="200.0"
+                        preserveRatio="true">
+
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+
+                    </ImageView>
+
+                </HBox>
+
+                <Separator
+                    styleClass="sidebar-separator"/>
+
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox spacing="5.0">
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="MOVIMENTAÇÃO"
+                    styleClass="nav-button"/>
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="ESTOQUE"
+                    styleClass="nav-button, nav-button-active"/>
+
+                <Button
+                    maxWidth="1.7976931348623157E308"
+                    prefHeight="45.0"
+                    text="HISTÓRICO"
+                    styleClass="nav-button"/>
+
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox
+                spacing="16"
+                styleClass="sidebar-bottom">
+
+                <Separator
+                    styleClass="sidebar-separator"/>
+
+                <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12">
+
+                    <Label
+                        alignment="CENTER"
+                        minWidth="43"
+                        prefHeight="43"
+                        prefWidth="43"
+                        styleClass="avatar"
+                        text="CC"/>
+
+                    <Label
+                        fx:id="usuarioLabel"
+                        styleClass="sidebar-user"
+                        text="Coordenador CAF"/>
+
+                </HBox>
+
+                <Button
+                    text="Sair do sistema"
+                    styleClass="sidebar-exit"/>
+
+            </VBox>
+
+        </VBox>
+
+    </left>
+
+    <!-- ÁREA PRINCIPAL -->
+
+    <center>
+
+        <VBox
+            spacing="25"
+            styleClass="content-area">
+
+            <!-- CABEÇALHO -->
+
+            <HBox alignment="CENTER_LEFT">
+
+                <VBox
+                    prefWidth="700.0"
+                    spacing="6">
+
+                    <Label
+                        text="Remover Medicamento"
+                        styleClass="page-title"/>
+
+                    <Label
+                        text="Estado de confirmação segura de descarte ou desativação de itens do inventário ativo"
+                        styleClass="page-subtitle"/>
+
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label
+                    fx:id="acessoLabel"
+                    graphicTextGap="8"
+                    styleClass="access-badge"
+                    text="Acesso: Coordenador CAF">
+
+                    <graphic>
+                        <Circle
+                            fill="#66BB6A"
+                            radius="4"/>
+                    </graphic>
+
+                </Label>
+
+            </HBox>
+
+            <Separator/>
+
+            <!-- CONTEÚDO -->
+
+            <HBox
+                alignment="TOP_LEFT"
+                fillHeight="false"
+                spacing="25">
+
+                <!-- FORMULÁRIO -->
+
+                <VBox
+                    maxWidth="738"
+                    prefWidth="738"
+                    spacing="20"
+                    styleClass="main-card, danger-card">
+
+                    <!-- AVISO -->
+
+                    <HBox
+                        alignment="CENTER_LEFT"
+                        prefHeight="47"
+                        spacing="10"
+                        styleClass="warning-banner">
+
+                        <SVGPath
+                            content="M12 3 L22 20 L2 20 Z M12 9 L12 14 M12 16.8 L12 17"
+                            fill="TRANSPARENT"
+                            stroke="#C81E1E"
+                            strokeLineCap="ROUND"
+                            strokeLineJoin="ROUND"
+                            strokeWidth="1.8"/>
+
+                        <Label
+                            text="ATENÇÃO: A AÇÃO DE EXCLUSÃO É IRREVERSÍVEL"
+                            styleClass="warning-text"/>
+
+                    </HBox>
+
+                    <!-- MEDICAMENTO | QUANTIDADE -->
+
+                    <HBox
+                        alignment="TOP_LEFT"
+                        spacing="78">
+
+                        <VBox
+                            prefWidth="252"
+                            spacing="6">
+
+                            <Label
+                                text="MEDICAMENTO SELECIONADO"
+                                styleClass="field-label"/>
+
+                            <ComboBox
+                                fx:id="campoMedicamento"
+                                maxWidth="1.7976931348623157E308"
+                                prefHeight="40"
+                                promptText="Selecione o medicamento"
+                                styleClass="field"/>
+
+                        </VBox>
+
+                        <VBox
+                            prefWidth="122"
+                            spacing="6">
+
+                            <Label
+                                text="QUANTIDADE"
+                                styleClass="field-label"/>
+
+                            <ComboBox
+                                fx:id="campoQuantidade"
+                                maxWidth="1.7976931348623157E308"
+                                prefHeight="40"
+                                promptText="Qtd."
+                                styleClass="field"/>
+
+                        </VBox>
+
+                    </HBox>
+
+                    <!-- MOTIVO -->
+
+                    <VBox spacing="6">
+
+                        <Label
+                            text="MOTIVO DA REMOÇÃO EXIGIDO"
+                            styleClass="field-label"/>
+
+                        <TextField
+                            fx:id="campoMotivo"
+                            prefHeight="40"
+                            promptText="Escreva detalhadamente o motivo do descarte (Ex: Lote vencido e recolhido)"
+                            styleClass="field"/>
+
+                    </VBox>
+
+                </VBox>
+
+                <!-- CONFIRMAÇÃO SEGURA -->
+
+                <VBox
+                    maxWidth="428"
+                    prefWidth="428"
+                    styleClass="summary">
+
+                    <Label
+                        text="CONFIRMAÇÃO SEGURA"
+                        styleClass="summary-title"/>
+
+                    <Separator styleClass="summary-separator">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="21"
+                                top="22"/>
+                        </VBox.margin>
+
+                    </Separator>
+
+                    <Label
+                        text="Esta ação desativa de forma permanente a exibição comercial e a movimentação deste medicamento no sistema ativo."
+                        wrapText="true"
+                        styleClass="summary-text"/>
+
+                    <Separator styleClass="summary-separator">
+
+                        <VBox.margin>
+                            <Insets
+                                bottom="22"
+                                top="21"/>
+                        </VBox.margin>
+
+                    </Separator>
+
+                    <Button
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="50"
+                        text="Remover Permanentemente"
+                        styleClass="danger-button"
+                        onAction="#remover"/>
+
+                    <Button
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="50"
+                        text="Cancelar e Voltar"
+                        styleClass="cancel-button"
+                        onAction="#voltar">
+
+                        <VBox.margin>
+                            <Insets top="12"/>
+                        </VBox.margin>
+
+                    </Button>
+
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>

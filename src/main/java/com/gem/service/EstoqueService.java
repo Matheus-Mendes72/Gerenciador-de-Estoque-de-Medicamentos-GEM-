@@ -1,9 +1,11 @@
+
 package com.gem.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gem.model.Estoque;
+import com.gem.model.Medicamento;
 import com.gem.model.Permissao;
 import com.gem.model.Usuario;
 import com.gem.reps.EstoqueRepository;
@@ -47,15 +49,15 @@ public class EstoqueService {
                 Permissao.ATUALIZAR_MEDICAMENTO
         );
 
-        if (estoque.getId() == null) {
+        if (estoque == null || estoque.getId() == null) {
             throw new IllegalArgumentException(
-                    "Medicamento não possui ID."
+                    "Registro de estoque não possui ID."
             );
         }
 
         if (!estoqueRepository.existsById(estoque.getId())) {
             throw new IllegalArgumentException(
-                    "Medicamento não encontrado."
+                    "Registro de estoque não encontrado."
             );
         }
 
@@ -74,9 +76,11 @@ public class EstoqueService {
                 Permissao.REMOVER_MEDICAMENTO
         );
 
-        if (!estoqueRepository.existsById(estoqueId)) {
+        if (estoqueId == null ||
+            !estoqueRepository.existsById(estoqueId)) {
+
             throw new IllegalArgumentException(
-                    "Medicamento não encontrado."
+                    "Registro de estoque não encontrado."
             );
         }
 
@@ -87,29 +91,15 @@ public class EstoqueService {
 
         if (estoque == null) {
             throw new IllegalArgumentException(
-                    "Medicamento não informado."
+                    "Registro de estoque não informado."
             );
         }
 
-        if (estoque.getPrincipioAtivo() == null ||
-            estoque.getPrincipioAtivo().isBlank()) {
+        Medicamento medicamento = estoque.getMedicamento();
 
+        if (medicamento == null || medicamento.getId() == null) {
             throw new IllegalArgumentException(
-                    "Princípio ativo é obrigatório."
-            );
-        }
-
-        if (estoque.getDose() == null ||
-            estoque.getDose().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Dose é obrigatória."
-            );
-        }
-
-        if (estoque.getTipoMed() == null) {
-            throw new IllegalArgumentException(
-                    "Tipo do medicamento é obrigatório."
+                    "Medicamento é obrigatório."
             );
         }
 
