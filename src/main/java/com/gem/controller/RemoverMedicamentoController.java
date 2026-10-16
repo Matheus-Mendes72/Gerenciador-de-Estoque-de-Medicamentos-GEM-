@@ -1,10 +1,10 @@
-
 package com.gem.controller;
 
 import com.gem.model.Medicamento;
 import com.gem.model.Usuario;
 import com.gem.security.SessaoUsuario;
 import com.gem.service.RemoverMedicamentoService;
+import com.gem.view.ViewManager;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import javafx.stage.Window;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import org.springframework.stereotype.Controller;
@@ -25,13 +25,16 @@ public class RemoverMedicamentoController {
 
     private final RemoverMedicamentoService removerMedicamentoService;
     private final SessaoUsuario sessaoUsuario;
+    private final ViewManager viewManager;
 
     public RemoverMedicamentoController(
             RemoverMedicamentoService removerMedicamentoService,
-            SessaoUsuario sessaoUsuario) {
+            SessaoUsuario sessaoUsuario,
+            ViewManager viewManager) {
 
         this.removerMedicamentoService = removerMedicamentoService;
         this.sessaoUsuario = sessaoUsuario;
+        this.viewManager = viewManager;
     }
 
     @FXML
@@ -68,7 +71,8 @@ public class RemoverMedicamentoController {
 
                 return medicamento.getPrincipioAtivo()
                         + " - " + medicamento.getDose()
-                        + " - " + medicamento.getTipoMed();
+                        + " (" + medicamento.getTipoMed() + ")"
+                        + (medicamento.getLaboratorio() != null ? " - " + medicamento.getLaboratorio() : "");
             }
 
             @Override
@@ -131,11 +135,17 @@ public class RemoverMedicamentoController {
             int quantidadeDisponivel =
                     removerMedicamentoService.obterQuantidadeDisponivel(selecionado);
 
-            for (int quantidade = 1;
-                    quantidade <= quantidadeDisponivel;
-                    quantidade++) {
+            if (quantidadeDisponivel <= 0) {
+                campoQuantidade.getItems().add(0);
+                campoQuantidade.getSelectionModel().selectFirst();
+            } else {
+                for (int quantidade = 1;
+                        quantidade <= quantidadeDisponivel;
+                        quantidade++) {
 
-                campoQuantidade.getItems().add(quantidade);
+                    campoQuantidade.getItems().add(quantidade);
+                }
+                campoQuantidade.getSelectionModel().selectLast();
             }
 
         } catch (RuntimeException e) {
@@ -152,45 +162,24 @@ public class RemoverMedicamentoController {
         Medicamento medicamento =
                 campoMedicamento.getSelectionModel().getSelectedItem();
 
-        Integer quantidade =
-                campoQuantidade.getSelectionModel().getSelectedItem();
-
         String motivo = campoMotivo.getText();
 
         if (medicamento == null) {
             exibirAlerta(
                     AlertType.WARNING,
                     "Medicamento não selecionado",
-                    "Selecione o medicamento que deseja remover."
+                    "Selecione o medicamento que deseja remover do catálogo."
             );
             return;
         }
 
-        if (quantidade == null || quantidade <= 0) {
-            exibirAlerta(
-                    AlertType.WARNING,
-                    "Quantidade inválida",
-                    "Selecione uma quantidade válida para a remoção."
-            );
-            return;
-        }
-
-        if (motivo == null || motivo.isBlank()) {
-            exibirAlerta(
-                    AlertType.WARNING,
-                    "Motivo obrigatório",
-                    "Informe o motivo da remoção."
-            );
-            return;
-        }
-
+        // 1. Confirmação da remoção (Critério US-09)
         Alert confirmacao = new Alert(AlertType.CONFIRMATION);
         confirmacao.setTitle("Confirmar remoção");
-        confirmacao.setHeaderText("Confirma a retirada do estoque?");
+        confirmacao.setHeaderText("Confirma a remoção do medicamento do catálogo?");
         confirmacao.setContentText(
-                "Medicamento: " + medicamento.getPrincipioAtivo()
-                + "\nQuantidade: " + quantidade
-                + "\nMotivo: " + motivo.trim()
+                "Medicamento: " + medicamento.getPrincipioAtivo() + " (" + medicamento.getDose() + ")"
+                + (motivo != null && !motivo.isBlank() ? "\nMotivo: " + motivo.trim() : "")
         );
 
         if (confirmacao.showAndWait().orElse(ButtonType.CANCEL)
@@ -198,17 +187,17 @@ public class RemoverMedicamentoController {
             return;
         }
 
+        // 2. Remoção do catálogo e exibição de mensagem de confirmação
         try {
-            removerMedicamentoService.removerEstoque(
-                    medicamento,
-                    quantidade,
-                    motivo.trim()
+            removerMedicamentoService.removerDoCatalogo(
+                    medicamento.getId(),
+                    motivo != null ? motivo.trim() : ""
             );
 
             exibirAlerta(
                     AlertType.INFORMATION,
                     "Remoção realizada",
-                    "A retirada foi registrada com sucesso."
+                    "Medicamento removido com sucesso!"
             );
 
             campoMedicamento.getSelectionModel().clearSelection();
@@ -223,15 +212,40 @@ public class RemoverMedicamentoController {
                     "Erro na remoção",
                     e.getMessage() != null
                             ? e.getMessage()
-                            : "Não foi possível concluir a remoção."
+                            : "Não foi possível concluir a remoção do medicamento."
             );
         }
     }
 
     @FXML
     public void voltar() {
-        Window janela = campoMedicamento.getScene().getWindow();
-        janela.hide();
+        try {
+            Stage stage = (Stage) campoMedicamento.getScene().getWindow();
+            viewManager.mostrarCoordenador(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void abrirMovimentacao() {
+        try {
+            Stage stage = (Stage) campoMedicamento.getScene().getWindow();
+            viewManager.mostrarMovimentacao(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void sair() {
+        try {
+            sessaoUsuario.encerrar();
+            Stage stage = (Stage) campoMedicamento.getScene().getWindow();
+            viewManager.mostrarLogin(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void exibirAlerta(

@@ -28,7 +28,7 @@
     prefWidth="1440.0">
 
     <stylesheets>
-        <URL value="@gem.css"/>
+        <URL value="@Gem.css"/>
     </stylesheets>
 
     <!-- MENU LATERAL -->
@@ -74,12 +74,14 @@
                     maxWidth="1.7976931348623157E308"
                     prefHeight="45.0"
                     text="MOVIMENTAÇÃO"
+                    onAction="#abrirMovimentacao"
                     styleClass="nav-button"/>
 
                 <Button
                     maxWidth="1.7976931348623157E308"
                     prefHeight="45.0"
                     text="ESTOQUE"
+                    onAction="#voltar"
                     styleClass="nav-button, nav-button-active"/>
 
                 <Button
@@ -120,6 +122,7 @@
 
                 <Button
                     text="Sair do sistema"
+                    onAction="#sair"
                     styleClass="sidebar-exit"/>
 
             </VBox>

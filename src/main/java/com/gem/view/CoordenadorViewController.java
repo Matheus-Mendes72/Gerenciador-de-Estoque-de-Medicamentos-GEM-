@@ -59,6 +59,54 @@ public class CoordenadorViewController {
     }
 
     @FXML
+    private void abrirCadastroMedicamento() {
+
+        if (!validarCoordenadorSilenciosamente()) {
+            return;
+        }
+
+        try {
+
+            Stage stage =
+                    (Stage) root.getScene().getWindow();
+
+            viewManager.mostrarCadastroMedicamento(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o cadastro de medicamentos."
+            );
+        }
+    }
+
+    @FXML
+    private void abrirRemoverMedicamento() {
+
+        if (!validarCoordenadorSilenciosamente()) {
+            return;
+        }
+
+        try {
+
+            Stage stage =
+                    (Stage) root.getScene().getWindow();
+
+            viewManager.mostrarRemoverMedicamento(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir a remoção de medicamentos."
+            );
+        }
+    }
+
+    @FXML
     private void sair() {
 
         sessaoUsuario.encerrar();

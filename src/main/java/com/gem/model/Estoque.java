@@ -2,7 +2,8 @@
 package com.gem.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "estoque")
@@ -16,11 +17,19 @@ public class Estoque {
     @JoinColumn(name = "id_medicamento", nullable = false)
     private Medicamento medicamento;
 
-    // @Column(name = "lote", nullable = false, length = 50)
-    // private String lote;
+    @Column(name = "principio_ativo", length = 50)
+    private String principioAtivo;
 
-    // @Column(name = "data_validade", nullable = false)
-    // private LocalDate dataValidade;
+    @Column(name = "dose", length = 50)
+    private String dose;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "tipo_med", columnDefinition = "tipo_med")
+    private TipoMed tipoMed;
+
+    @Column(name = "lote", length = 50)
+    private String lote;
 
     @Column(nullable = false)
     private Integer quantidade;
@@ -36,13 +45,30 @@ public class Estoque {
         return medicamento;
     }
 
-    // public String getLote() {
-    //     return lote;
-    // }
+    public String getPrincipioAtivo() {
+        if (principioAtivo != null) {
+            return principioAtivo;
+        }
+        return medicamento != null ? medicamento.getPrincipioAtivo() : null;
+    }
 
-    // public LocalDate getDataValidade() {
-    //     return dataValidade;
-    // }
+    public String getDose() {
+        if (dose != null) {
+            return dose;
+        }
+        return medicamento != null ? medicamento.getDose() : null;
+    }
+
+    public TipoMed getTipoMed() {
+        if (tipoMed != null) {
+            return tipoMed;
+        }
+        return medicamento != null ? medicamento.getTipoMed() : null;
+    }
+
+    public String getLote() {
+        return lote;
+    }
 
     public Integer getQuantidade() {
         return quantidade;
@@ -50,15 +76,34 @@ public class Estoque {
 
     public void setMedicamento(Medicamento medicamento) {
         this.medicamento = medicamento;
+        if (medicamento != null) {
+            if (this.principioAtivo == null) {
+                this.principioAtivo = medicamento.getPrincipioAtivo();
+            }
+            if (this.dose == null) {
+                this.dose = medicamento.getDose();
+            }
+            if (this.tipoMed == null) {
+                this.tipoMed = medicamento.getTipoMed();
+            }
+        }
     }
 
-    // public void setLote(String lote) {
-    //     this.lote = lote;
-    // }
+    public void setPrincipioAtivo(String principioAtivo) {
+        this.principioAtivo = principioAtivo;
+    }
 
-    // public void setDataValidade(LocalDate dataValidade) {
-    //     this.dataValidade = dataValidade;
-    // }
+    public void setDose(String dose) {
+        this.dose = dose;
+    }
+
+    public void setTipoMed(TipoMed tipoMed) {
+        this.tipoMed = tipoMed;
+    }
+
+    public void setLote(String lote) {
+        this.lote = lote;
+    }
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;

@@ -69,11 +69,13 @@
                     maxWidth="1.7976931348623157E308"
                     prefHeight="45"
                     text="CADASTRO DE MEDICAMENTOS"
+                    onAction="#abrirCadastroMedicamento"
                     style="-fx-background-color: #002D73;
                            -fx-text-fill: #B7C5DB;
                            -fx-font-weight: bold;
                            -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
+                           -fx-padding: 0 20 0 20;
+                           -fx-cursor: hand;"/>
 
                 <Button
                     maxWidth="1.7976931348623157E308"
@@ -89,11 +91,13 @@
                     maxWidth="1.7976931348623157E308"
                     prefHeight="45"
                     text="REMOÇÃO DE MEDICAMENTOS"
+                    onAction="#abrirRemoverMedicamento"
                     style="-fx-background-color: #002D73;
                            -fx-text-fill: #B7C5DB;
                            -fx-font-weight: bold;
                            -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
+                           -fx-padding: 0 20 0 20;
+                           -fx-cursor: hand;"/>
 
                 <Button
                     maxWidth="1.7976931348623157E308"

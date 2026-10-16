@@ -1,18 +1,19 @@
-
 package com.gem.controller;
 
 import com.gem.model.Estoque;
 import com.gem.model.Medicamento;
 import com.gem.model.TipoMed;
+import com.gem.model.Usuario;
+import com.gem.security.SessaoUsuario;
 import com.gem.service.MedicamentoService;
-
-import java.time.LocalDate;
+import com.gem.view.ViewManager;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import org.springframework.stereotype.Controller;
 
@@ -20,10 +21,16 @@ import org.springframework.stereotype.Controller;
 public class CadastroMedicamentoController {
 
     private final MedicamentoService medicamentoService;
+    private final SessaoUsuario sessaoUsuario;
+    private final ViewManager viewManager;
 
     public CadastroMedicamentoController(
-            MedicamentoService medicamentoService) {
+            MedicamentoService medicamentoService,
+            SessaoUsuario sessaoUsuario,
+            ViewManager viewManager) {
         this.medicamentoService = medicamentoService;
+        this.sessaoUsuario = sessaoUsuario;
+        this.viewManager = viewManager;
     }
 
     @FXML
@@ -39,46 +46,67 @@ public class CadastroMedicamentoController {
     private TextField campoLaboratorio;
 
     @FXML
-    private DatePicker campoDataValidade;
-
-    @FXML
     private TextField campoQuantidade;
 
     @FXML
     private TextField campoLote;
 
     @FXML
+    private TextField campoResponsavel;
+
+    @FXML
+    private Label usuarioLabel;
+
+    @FXML
+    private Label acessoLabel;
+
+    @FXML
+    private Label resumoResponsavelLabel;
+
+    @FXML
+    private Label resumoPerfilLabel;
+
+    @FXML
     public void initialize() {
         campoTipoMed.getItems().setAll(TipoMed.values());
+        carregarDadosUsuario();
+    }
+
+    private void carregarDadosUsuario() {
+        Usuario usuario = sessaoUsuario.getUsuarioAtual();
+        if (usuario != null && usuario.getCargo() != null) {
+            String cargo = usuario.getCargo().name();
+            if (usuarioLabel != null) usuarioLabel.setText(cargo);
+            if (acessoLabel != null) acessoLabel.setText("Acesso: " + cargo);
+            if (campoResponsavel != null) campoResponsavel.setText(cargo);
+            if (resumoResponsavelLabel != null) resumoResponsavelLabel.setText(cargo);
+            if (resumoPerfilLabel != null) resumoPerfilLabel.setText(cargo);
+        }
     }
 
     @FXML
     public void cadastrar() {
 
-        // 1. Validar os campos obrigatórios
-        if (campoPrincipioAtivo.getText().isBlank()
-                || campoDose.getText().isBlank()
+        // 1. Validar todos os campos obrigatórios especificados na US-08
+        if (campoPrincipioAtivo.getText() == null || campoPrincipioAtivo.getText().isBlank()
+                || campoDose.getText() == null || campoDose.getText().isBlank()
                 || campoTipoMed.getValue() == null
-                || campoLaboratorio.getText().isBlank()
-                || campoDataValidade.getValue() == null
-                || campoQuantidade.getText().isBlank()
-                || campoLote.getText().isBlank()) {
+                || campoLaboratorio.getText() == null || campoLaboratorio.getText().isBlank()
+                || campoQuantidade.getText() == null || campoQuantidade.getText().isBlank()
+                || campoLote.getText() == null || campoLote.getText().isBlank()) {
 
             mostrarAlerta(
                     Alert.AlertType.WARNING,
                     "Campos obrigatórios",
-                    "Preencha todos os campos antes de salvar."
+                    "Preencha todos os campos obrigatórios antes de salvar."
             );
             return;
         }
 
-        // 2. Validar a quantidade
+        // 2. Validar a quantidade inicial
         int quantidade;
-
         try {
-            quantidade = Integer.parseInt(
-                    campoQuantidade.getText().trim()
-            );
+            quantidade = Integer.parseInt(campoQuantidade.getText().trim());
 
             if (quantidade <= 0) {
                 mostrarAlerta(
@@ -98,27 +126,20 @@ public class CadastroMedicamentoController {
             return;
         }
 
-        // 3. Criar o objeto Medicamento
+        // 3. Criar o objeto Medicamento com os dados informados
         Medicamento medicamento = new Medicamento();
-
-        medicamento.setPrincipioAtivo(
-                campoPrincipioAtivo.getText().trim()
-        );
+        medicamento.setPrincipioAtivo(campoPrincipioAtivo.getText().trim());
         medicamento.setDose(campoDose.getText().trim());
         medicamento.setTipoMed(campoTipoMed.getValue());
-        // medicamento.setLaboratorio(
-        //         campoLaboratorio.getText().trim()
-        // );
+        medicamento.setLaboratorio(campoLaboratorio.getText().trim());
         medicamento.setAtivo(true);
 
-        // 4. Criar o objeto Estoque
+        // 4. Criar o objeto Estoque inicial com lote
         Estoque estoque = new Estoque();
-
-        // estoque.setLote(campoLote.getText().trim());
-        // estoque.setDataValidade(campoDataValidade.getValue());
+        estoque.setLote(campoLote.getText().trim());
         estoque.setQuantidade(quantidade);
 
-        // 5. Salvar os dados
+        // 5. Salvar os dados via serviço
         try {
             medicamentoService.cadastrarComEstoque(
                     medicamento,
@@ -137,9 +158,49 @@ public class CadastroMedicamentoController {
             mostrarAlerta(
                     Alert.AlertType.ERROR,
                     "Erro no cadastro",
-                    "Não foi possível cadastrar o medicamento."
+                    e.getMessage() != null ? e.getMessage() : "Não foi possível cadastrar o medicamento."
             );
+            e.printStackTrace();
+        }
+    }
 
+    @FXML
+    public void limparCampos() {
+        campoPrincipioAtivo.clear();
+        campoDose.clear();
+        campoTipoMed.setValue(null);
+        campoLaboratorio.clear();
+        campoQuantidade.clear();
+        campoLote.clear();
+    }
+
+    @FXML
+    public void voltar() {
+        try {
+            Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+            viewManager.mostrarCoordenador(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void abrirMovimentacao() {
+        try {
+            Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+            viewManager.mostrarMovimentacao(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void sair() {
+        try {
+            sessaoUsuario.encerrar();
+            Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+            viewManager.mostrarLogin(stage);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -154,15 +215,5 @@ public class CadastroMedicamentoController {
         alerta.setHeaderText(null);
         alerta.setContentText(mensagem);
         alerta.showAndWait();
-    }
-
-    private void limparCampos() {
-        campoPrincipioAtivo.clear();
-        campoDose.clear();
-        campoTipoMed.setValue(null);
-        campoLaboratorio.clear();
-        campoDataValidade.setValue(null);
-        campoQuantidade.clear();
-        campoLote.clear();
     }
 }

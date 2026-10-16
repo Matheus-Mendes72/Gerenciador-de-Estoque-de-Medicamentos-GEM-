@@ -27,6 +27,9 @@ public class Medicamento {
     @Column(nullable = false)
     private Boolean ativo = true;
 
+    @Column(name = "laboratorio", length = 100)
+    private String laboratorio;
+
     public Medicamento() {
     }
 
@@ -50,6 +53,10 @@ public class Medicamento {
         return ativo;
     }
 
+    public String getLaboratorio() {
+        return laboratorio;
+    }
+
     public void setPrincipioAtivo(String principioAtivo) {
         this.principioAtivo = principioAtivo;
     }
@@ -64,5 +71,9 @@ public class Medicamento {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public void setLaboratorio(String laboratorio) {
+        this.laboratorio = laboratorio;
     }
 }
