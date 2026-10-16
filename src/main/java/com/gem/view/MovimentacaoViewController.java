@@ -257,6 +257,94 @@ public class MovimentacaoViewController {
         }
     }
 
+    @FXML
+    private void abrirHistorico() {
+
+        try {
+
+            Stage stage =
+                    (Stage) usuarioLabel
+                            .getScene()
+                            .getWindow();
+
+            viewManager.mostrarHistorico(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o histórico."
+            );
+        }
+    }
+
+    @FXML
+    private void abrirEstoque() {
+
+        try {
+
+            Stage stage =
+                    (Stage) usuarioLabel
+                            .getScene()
+                            .getWindow();
+
+            viewManager.mostrarEstoque(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o estoque."
+            );
+        }
+    }
+
+    @FXML
+    private void abrirCadastroMedicamento() {
+
+        try {
+
+            Stage stage =
+                    (Stage) usuarioLabel
+                            .getScene()
+                            .getWindow();
+
+            viewManager.mostrarCadastroMedicamento(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir o cadastro de medicamentos."
+            );
+        }
+    }
+
+    @FXML
+    private void abrirRemoverMedicamento() {
+
+        try {
+
+            Stage stage =
+                    (Stage) usuarioLabel
+                            .getScene()
+                            .getWindow();
+
+            viewManager.mostrarRemoverMedicamento(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            mostrarErro(
+                    "Não foi possível abrir a remoção de medicamentos."
+            );
+        }
+    }
+
     private Integer obterEstoqueId() {
 
         String texto =

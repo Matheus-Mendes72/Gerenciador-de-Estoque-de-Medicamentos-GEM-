@@ -2,197 +2,279 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane
     xmlns="http://javafx.com/javafx/27"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.gem.view.CoordenadorViewController"
-    fx:id="root"
-    prefWidth="1440"
-    prefHeight="900"
-    style="-fx-background-color: #F5F7FA;">
+    fx:controller="com.gem.view.MovimentacaoViewController"
+    stylesheets="@movimentacao.css"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
 
-    <!-- MENU -->
-
+    <!-- ======================================================================
+         SIDEBAR (Menu Lateral do Coordenador: Movimentação, Estoque, Histórico)
+         ====================================================================== -->
     <left>
-
-        <VBox
-            prefWidth="277"
-            style="-fx-background-color: #002D73;">
-
-            <VBox
-                spacing="18"
-                style="-fx-padding: 25 17 0 17;">
-
-                <ImageView
-                    fitHeight="68"
-                    fitWidth="200"
-                    preserveRatio="true">
-
-                    <image>
-                        <Image url="@images/gem-icon-home.png"/>
-                    </image>
-
-                </ImageView>
-
-                <Separator
-                    style="-fx-background-color: rgba(255,255,255,0.25);"/>
-
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <!-- Logo Header -->
+            <VBox styleClass="sidebar-logo-container" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="48.0" fitWidth="170.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+                <Separator styleClass="sidebar-separator"/>
             </VBox>
 
-            <Region
-                VBox.vgrow="ALWAYS"/>
-
-            <VBox
-                spacing="5">
+            <!-- Navigation Links -->
+            <VBox spacing="8" styleClass="sidebar-nav-container">
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="⇄  Movimentação"
+                    styleClass="sidebar-nav-btn, sidebar-nav-btn-active"/>
 
                 <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="MOVIMENTAÇÃO"
-                    onAction="#abrirMovimentacao"
-                    style="-fx-background-color: #66BB6A;
-                           -fx-text-fill: white;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;
-                           -fx-cursor: hand;"/>
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="📦  Estoque"
+                    onAction="#abrirEstoque"
+                    styleClass="sidebar-nav-btn"/>
 
                 <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="CADASTRO DE MEDICAMENTOS"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
-                <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="ATUALIZAÇÃO DE ESTOQUE"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
-                <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="REMOÇÃO DE MEDICAMENTOS"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
-                <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="HISTÓRICO"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="🕒  Histórico"
+                    onAction="#abrirHistorico"
+                    styleClass="sidebar-nav-btn"/>
             </VBox>
 
-            <Region
-                VBox.vgrow="ALWAYS"/>
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox
-                spacing="15"
-                style="-fx-padding: 20 17 24 17;">
+            <!-- User Footer Widget -->
+            <VBox spacing="14" styleClass="sidebar-footer">
+                <Separator styleClass="sidebar-separator"/>
 
-                <Separator
-                    style="-fx-background-color: rgba(255,255,255,0.25);"/>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label
+                        prefHeight="42.0"
+                        prefWidth="42.0"
+                        minHeight="42.0"
+                        minWidth="42.0"
+                        text="GEM"
+                        styleClass="sidebar-avatar"/>
 
-                <Label
-                    text="COORDENADOR"
-                    style="-fx-text-fill: white;
-                           -fx-font-size: 14px;
-                           -fx-font-weight: bold;"/>
+                    <VBox alignment="CENTER_LEFT" spacing="2" HBox.hgrow="ALWAYS">
+                        <Label
+                            fx:id="usuarioLabel"
+                            text="Coordenador"
+                            styleClass="sidebar-user-name"/>
+                        <Label
+                            text="Coordenação Geral"
+                            styleClass="sidebar-user-role"/>
+                    </VBox>
 
-                <Button
-                    text="Sair do sistema"
-                    onAction="#sair"
-                    style="-fx-background-color: transparent;
-                           -fx-text-fill: white;
-                           -fx-font-size: 14px;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-cursor: hand;"/>
-
+                    <Button
+                        text="➔"
+                        onAction="#sair"
+                        styleClass="sidebar-logout-btn"/>
+                </HBox>
             </VBox>
-
         </VBox>
-
     </left>
 
-    <!-- CONTEÚDO -->
-
+    <!-- ======================================================================
+         ÁREA PRINCIPAL (Center: Apenas as Funcionalidades Reais do Projeto)
+         ====================================================================== -->
     <center>
+        <VBox spacing="20" style="-fx-padding: 30 36 28 36;">
 
-        <VBox
-            spacing="20"
-            style="-fx-padding: 50;">
+            <!-- Header Principal -->
+            <HBox alignment="CENTER_LEFT" styleClass="main-header">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Movimentação de medicamentos" styleClass="header-title"/>
+                    <Label text="Registre saídas e retornos com rastreabilidade completa." styleClass="header-subtitle"/>
+                </VBox>
 
-            <Label
-                text="Área do Coordenador"
-                style="-fx-text-fill: #0D3B82;
-                       -fx-font-size: 28px;
-                       -fx-font-weight: bold;"/>
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <Label fx:id="acessoLabel" text="Acesso: Coordenador" styleClass="header-profile-badge"/>
+                    <Label prefHeight="38.0" prefWidth="38.0" text="COORD" styleClass="header-avatar"/>
+                </HBox>
+            </HBox>
 
-            <Label
-                text="Acesso às funcionalidades administrativas do GEM."
-                style="-fx-text-fill: #53627A;
-                       -fx-font-size: 15px;"/>
+            <!-- Cards Superiores de Ação (Dispensação e Retorno) -->
+            <HBox spacing="18">
+                <Button
+                    prefHeight="64.0"
+                    text="➔  Dispensação de Medicamento&#10;     Registrar saída de item do estoque"
+                    onAction="#confirmarSaida"
+                    styleClass="op-button, op-card-dispensa"
+                    HBox.hgrow="ALWAYS"
+                    maxWidth="Infinity"/>
 
-            <VBox
-                spacing="12"
-                style="-fx-background-color: white;
-                       -fx-background-radius: 14;
-                       -fx-padding: 30;
-                       -fx-border-color: #D9E1EC;
-                       -fx-border-radius: 14;">
+                <Button
+                    prefHeight="64.0"
+                    text="↺  Retorno ao Estoque&#10;     Registrar devolução de item não utilizado"
+                    onAction="#confirmarRetorno"
+                    styleClass="op-button, op-card-retorno"
+                    HBox.hgrow="ALWAYS"
+                    maxWidth="Infinity"/>
+            </HBox>
 
-                <Label
-                    text="Permissões do coordenador"
-                    style="-fx-text-fill: #0D3B82;
-                           -fx-font-size: 18px;
-                           -fx-font-weight: bold;"/>
+            <!-- Linha Principal de Conteúdo (Formulário + Resumo) -->
+            <HBox spacing="24" VBox.vgrow="ALWAYS">
 
-                <Label
-                    text="• Cadastro de medicamentos"/>
+                <!-- PAINEL CENTRAL (Formulário com os 4 campos reais do sistema) -->
+                <VBox styleClass="form-card" spacing="18" HBox.hgrow="ALWAYS">
+                    <Label text="Dados da Movimentação" styleClass="form-section-title"/>
 
-                <Label
-                    text="• Atualização de medicamentos"/>
+                    <!-- Grid de Campos Reais -->
+                    <GridPane hgap="18" vgap="14">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
 
-                <Label
-                    text="• Remoção de medicamentos"/>
+                        <!-- Linha 1: Setor e Medicamento -->
+                        <Label text="SETOR DESTINATÁRIO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-                <Label
-                    text="• Saída de medicamentos"/>
+                        <ComboBox
+                            fx:id="setorComboBox"
+                            prefHeight="40.0"
+                            maxWidth="Infinity"
+                            promptText="Selecione o setor"
+                            styleClass="combo-box-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="1"/>
 
-                <Label
-                    text="• Retorno de medicamentos"/>
+                        <TextField
+                            fx:id="medicamentoField"
+                            prefHeight="40.0"
+                            promptText="Digite o ID do estoque (ex: 1)"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="1"/>
 
-                <Label
-                    text="• Consulta de histórico"/>
+                        <!-- Linha 2: Quantidade e Motivo/Observação -->
+                        <Label text="QUANTIDADE" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label text="MOTIVO / OBSERVAÇÃO" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-            </VBox>
+                        <TextField
+                            fx:id="quantidadeField"
+                            prefHeight="40.0"
+                            promptText="Digite a quantidade"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="3"/>
+
+                        <TextField
+                            fx:id="motivoField"
+                            prefHeight="40.0"
+                            promptText="Informe o motivo ou observação"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="3"/>
+
+                        <rowConstraints>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                        </rowConstraints>
+                    </GridPane>
+
+                    <!-- Campo legado oculto para compatibilidade total -->
+                    <TextField fx:id="setorField" visible="false" managed="false"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <!-- PAINEL LATERAL DIREITO (Resumo da Operação Real) -->
+                <VBox styleClass="summary-card" prefWidth="380.0" minWidth="360.0" spacing="16">
+                    <Label text="Resumo da Operação" styleClass="summary-title"/>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <!-- Responsável Real -->
+                    <VBox spacing="3">
+                        <Label text="PROFISSIONAL" styleClass="summary-caption"/>
+                        <Label fx:id="resumoDispensadorLabel" text="Coordenador" styleClass="summary-primary-text"/>
+                    </VBox>
+
+                    <!-- Destino & Data/Hora Reais -->
+                    <HBox spacing="18">
+                        <VBox spacing="3" HBox.hgrow="ALWAYS">
+                            <Label text="DESTINO" styleClass="summary-caption"/>
+                            <Label fx:id="resumoDestinoLabel" text="Selecione o setor" styleClass="summary-primary-text"/>
+                        </VBox>
+
+                        <VBox spacing="3" HBox.hgrow="ALWAYS">
+                            <Label text="DATA E HORA" styleClass="summary-caption"/>
+                            <Label fx:id="resumoDataHoraLabel" text="Registrada automaticamente" styleClass="summary-secondary-text"/>
+                        </VBox>
+                    </HBox>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <!-- Item Processado Real -->
+                    <VBox spacing="6">
+                        <Label text="ITEM PROCESSADO" styleClass="summary-caption"/>
+                        <Label fx:id="resumoItemLabel" text="Nenhum item processado" styleClass="summary-item-name"/>
+                    </VBox>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Botão Principal de Confirmação de Saída -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="46.0"
+                        text="✔  Confirmar Saída"
+                        onAction="#confirmarSaida"
+                        styleClass="confirm-action-btn"/>
+
+                    <!-- Botão de Confirmação de Retorno -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="40.0"
+                        text="↺  Confirmar Retorno"
+                        onAction="#confirmarRetorno"
+                        styleClass="return-action-btn"/>
+
+                    <!-- Botão de Sair/Cancelar -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="38.0"
+                        text="Cancelar / Sair"
+                        onAction="#sair"
+                        styleClass="cancel-action-btn"/>
+                </VBox>
+
+            </HBox>
 
         </VBox>
-
     </center>
 
 </BorderPane>

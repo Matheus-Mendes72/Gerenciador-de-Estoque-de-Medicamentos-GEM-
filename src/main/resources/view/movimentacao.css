@@ -1,0 +1,570 @@
+/* Estilos Visuais para a Tela de Movimentação do GEM */
+
+.root {
+    -fx-font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: #F8FAFC;
+}
+
+/* ==========================================================================
+   SIDEBAR (Menu Lateral)
+   ========================================================================== */
+.sidebar {
+    -fx-background-color: #0A2540;
+}
+
+.sidebar-logo-container {
+    -fx-padding: 24px 20px 16px 20px;
+}
+
+.sidebar-nav-container {
+    -fx-padding: 10px 14px 10px 14px;
+}
+
+.sidebar-nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12px 16px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.sidebar-nav-btn:hover {
+    -fx-background-color: #132F52;
+    -fx-text-fill: #FFFFFF;
+}
+
+.sidebar-nav-btn-active {
+    -fx-background-color: #17375E;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #22C55E;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-radius: 0;
+    -fx-background-radius: 8px;
+}
+
+.sidebar-separator {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-footer {
+    -fx-padding: 16px 18px 24px 18px;
+}
+
+.sidebar-avatar {
+    -fx-background-color: #1E4E8C;
+    -fx-background-radius: 50%;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.sidebar-user-name {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-user-role {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 11px;
+}
+
+.sidebar-logout-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 6px;
+}
+
+.sidebar-logout-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: #FFFFFF;
+}
+
+/* ==========================================================================
+   HEADER PRINCIPAL
+   ========================================================================== */
+.main-header {
+    -fx-padding: 0 0 8px 0;
+}
+
+.header-title {
+    -fx-text-fill: #0F2744;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.header-subtitle {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 13px;
+}
+
+.header-profile-badge {
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #BFDBFE;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 6px 16px;
+    -fx-text-fill: #1D4ED8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.header-avatar {
+    -fx-background-color: #E2E8F0;
+    -fx-background-radius: 50%;
+    -fx-text-fill: #0F2744;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+/* ==========================================================================
+   CARDS DE OPERAÇÃO (Tabs Superiores)
+   ========================================================================== */
+.op-button {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 18px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.op-card-dispensa {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #3B82F6;
+    -fx-border-width: 1.5px;
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.12), 8, 0, 0, 2);
+}
+
+.op-card-dispensa:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #2563EB;
+}
+
+.op-card-retorno {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.op-card-retorno:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #10B981;
+}
+
+/* ==========================================================================
+   PAINEL DE FORMULÁRIO (Card Esquerdo)
+   ========================================================================== */
+.form-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-padding: 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 8, 0, 0, 2);
+}
+
+.form-section-title {
+    -fx-text-fill: #0F2744;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.field-label {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.field-sublabel {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 11px;
+}
+
+.text-input-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13px;
+}
+
+.text-input-field:focused {
+    -fx-border-color: #3B82F6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.15), 4, 0, 0, 0);
+}
+
+.readonly-field {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+}
+
+.combo-box-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 13px;
+}
+
+.combo-box-field:focused {
+    -fx-border-color: #3B82F6;
+}
+
+.badge-pill {
+    -fx-background-color: #F1F5F9;
+    -fx-background-radius: 12px;
+    -fx-text-fill: #475569;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 10px;
+}
+
+.action-add-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #16A34A;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 6px 0;
+}
+
+.action-add-btn:hover {
+    -fx-text-fill: #15803D;
+    -fx-underline: true;
+}
+
+/* ==========================================================================
+   PAINEL DE RESUMO (Card Direito)
+   ========================================================================== */
+.summary-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-padding: 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 8, 0, 0, 2);
+}
+
+.summary-title {
+    -fx-text-fill: #0F2744;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.summary-caption {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.summary-primary-text {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.summary-secondary-text {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 11px;
+}
+
+.summary-divider {
+    -fx-background-color: #E2E8F0;
+}
+
+.summary-item-name {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.summary-total-label {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 13px;
+}
+
+.summary-total-number {
+    -fx-text-fill: #0F172A;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.confirm-action-btn {
+    -fx-background-color: #22C55E;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(34, 197, 94, 0.25), 6, 0, 0, 2);
+}
+
+.confirm-action-btn:hover {
+    -fx-background-color: #16A34A;
+}
+
+.return-action-btn {
+    -fx-background-color: #ECFDF5;
+    -fx-text-fill: #059669;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-border-color: #A7F3D0;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+
+.return-action-btn:hover {
+    -fx-background-color: #D1FAE5;
+    -fx-text-fill: #047857;
+}
+
+.cancel-action-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748B;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+
+.cancel-action-btn:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-text-fill: #1E293B;
+}
+
+/* ==========================================================================
+   TABLE VIEW (Tela de Histórico)
+   ========================================================================== */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: #F1F5F9;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-size: 38px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13px;
+    -fx-padding: 10px 12px;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: #F1F5F9;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #F8FAFC;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #EFF6FF;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #DBEAFE;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #1D4ED8;
+}
+
+/* DatePicker styling */
+.date-picker {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1E293B;
+    -fx-padding: 0 8px;
+}
+
+.date-picker:focused {
+    -fx-border-color: #3B82F6;
+}
+
+/* ==========================================================================
+   ESTILOS DE REMOÇÃO / ALERTA (Tela de Remoção)
+   ========================================================================== */
+.danger-action-btn {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.25), 6, 0, 0, 2);
+}
+
+.danger-action-btn:hover {
+    -fx-background-color: #DC2626;
+}
+
+.warning-banner {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #FECACA;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px 16px;
+}
+
+.warning-text {
+    -fx-text-fill: #991B1B;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* ==========================================================================
+   ESTILOS DA TELA DE ESTOQUE
+   ========================================================================== */
+.search-field-container {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 0 14px;
+}
+
+.search-field-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1E293B;
+    -fx-prompt-text-fill: #94A3B8;
+}
+
+.btn-cadastrar-estoque {
+    -fx-background-color: #10B981;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-padding: 10px 22px;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.25), 6, 0, 0, 2);
+}
+
+.btn-cadastrar-estoque:hover {
+    -fx-background-color: #059669;
+}
+
+.pill-status-normal {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #15803D;
+    -fx-background-radius: 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 12px;
+    -fx-alignment: CENTER;
+}
+
+.pill-status-atencao {
+    -fx-background-color: #FEF3C7;
+    -fx-text-fill: #B45309;
+    -fx-background-radius: 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 12px;
+    -fx-alignment: CENTER;
+}
+
+.pill-status-baixo {
+    -fx-background-color: #FEE2E2;
+    -fx-text-fill: #B91C1C;
+    -fx-background-radius: 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 12px;
+    -fx-alignment: CENTER;
+}
+
+.action-remover-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 4px 8px;
+}
+
+.action-remover-link:hover {
+    -fx-text-fill: #DC2626;
+    -fx-underline: true;
+}
+
+.badge-atualizado-agora {
+    -fx-background-color: #F0FDF4;
+    -fx-border-color: #BBF7D0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #16A34A;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 10px;
+}
+
+

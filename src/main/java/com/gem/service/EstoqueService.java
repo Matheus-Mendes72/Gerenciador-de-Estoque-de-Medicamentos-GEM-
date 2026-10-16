@@ -47,15 +47,15 @@ public class EstoqueService {
                 Permissao.ATUALIZAR_MEDICAMENTO
         );
 
-        if (estoque.getId() == null) {
+        if (estoque == null || estoque.getId() == null) {
             throw new IllegalArgumentException(
-                    "Medicamento não possui ID."
+                    "Registro de estoque não possui ID."
             );
         }
 
         if (!estoqueRepository.existsById(estoque.getId())) {
             throw new IllegalArgumentException(
-                    "Medicamento não encontrado."
+                    "Registro de estoque não encontrado."
             );
         }
 
@@ -74,9 +74,9 @@ public class EstoqueService {
                 Permissao.REMOVER_MEDICAMENTO
         );
 
-        if (!estoqueRepository.existsById(estoqueId)) {
+        if (estoqueId == null || !estoqueRepository.existsById(estoqueId)) {
             throw new IllegalArgumentException(
-                    "Medicamento não encontrado."
+                    "Registro de estoque não encontrado."
             );
         }
 
