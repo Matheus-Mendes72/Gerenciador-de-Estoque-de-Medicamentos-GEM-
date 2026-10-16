@@ -1,178 +1,307 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane
     xmlns="http://javafx.com/javafx/27"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.gem.view.TecnicoViewController"
-    fx:id="root"
-    prefWidth="1440"
-    prefHeight="900"
-    style="-fx-background-color: #F5F7FA;">
+    fx:controller="com.gem.view.MovimentacaoViewController"
+    stylesheets="@movimentacao.css"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
 
-    <!-- MENU -->
-
+    <!-- ======================================================================
+         SIDEBAR (Menu Lateral do Técnico de Enfermagem: APENAS MOVIMENTAÇÃO)
+         ====================================================================== -->
     <left>
-
-        <VBox
-            prefWidth="277"
-            style="-fx-background-color: #002D73;">
-
-            <VBox
-                spacing="18"
-                style="-fx-padding: 25 17 0 17;">
-
-                <ImageView
-                    fitHeight="68"
-                    fitWidth="200"
-                    preserveRatio="true">
-
-                    <image>
-                        <Image url="@images/gem-icon-home.png"/>
-                    </image>
-
-                </ImageView>
-
-                <Separator
-                    style="-fx-background-color: rgba(255,255,255,0.25);"/>
-
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <!-- Logo Header -->
+            <VBox styleClass="sidebar-logo-container" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="48.0" fitWidth="170.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+                <Separator styleClass="sidebar-separator"/>
             </VBox>
 
-            <Region
-                VBox.vgrow="ALWAYS"/>
-
-            <VBox
-                spacing="5">
-
+            <!-- Navigation Links (Apenas Movimentação) -->
+            <VBox spacing="8" styleClass="sidebar-nav-container">
                 <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="MOVIMENTAÇÃO"
-                    onAction="#abrirMovimentacao"
-                    style="-fx-background-color: #66BB6A;
-                           -fx-text-fill: white;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;
-                           -fx-cursor: hand;"/>
-
-                <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="ESTOQUE"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
-                <Button
-                    maxWidth="1.7976931348623157E308"
-                    prefHeight="45"
-                    text="HISTÓRICO"
-                    style="-fx-background-color: #002D73;
-                           -fx-text-fill: #B7C5DB;
-                           -fx-font-weight: bold;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-padding: 0 20 0 20;"/>
-
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="⇄  Movimentação"
+                    styleClass="sidebar-nav-btn, sidebar-nav-btn-active"/>
             </VBox>
 
-            <Region
-                VBox.vgrow="ALWAYS"/>
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox
-                spacing="15"
-                style="-fx-padding: 20 17 24 17;">
+            <!-- User Footer Widget -->
+            <VBox spacing="14" styleClass="sidebar-footer">
+                <Separator styleClass="sidebar-separator"/>
 
-                <Separator
-                    style="-fx-background-color: rgba(255,255,255,0.25);"/>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label
+                        prefHeight="42.0"
+                        prefWidth="42.0"
+                        minHeight="42.0"
+                        minWidth="42.0"
+                        text="GEM"
+                        styleClass="sidebar-avatar"/>
 
-                <Label
-                    text="TÉCNICO DE ENFERMAGEM"
-                    style="-fx-text-fill: white;
-                           -fx-font-size: 13px;
-                           -fx-font-weight: bold;"/>
+                    <VBox alignment="CENTER_LEFT" spacing="2" HBox.hgrow="ALWAYS">
+                        <Label
+                            fx:id="usuarioLabel"
+                            text="Técnico de Enfermagem"
+                            styleClass="sidebar-user-name"/>
+                        <Label
+                            text="Farmácia Satélite"
+                            styleClass="sidebar-user-role"/>
+                    </VBox>
 
-                <Button
-                    text="Sair do sistema"
-                    onAction="#sair"
-                    style="-fx-background-color: transparent;
-                           -fx-text-fill: white;
-                           -fx-font-size: 14px;
-                           -fx-alignment: CENTER_LEFT;
-                           -fx-cursor: hand;"/>
-
+                    <Button
+                        text="➔"
+                        onAction="#sair"
+                        styleClass="sidebar-logout-btn"/>
+                </HBox>
             </VBox>
-
         </VBox>
-
     </left>
 
-    <!-- CONTEÚDO -->
-
+    <!-- ======================================================================
+         ÁREA PRINCIPAL (Center: A seção onde ele pode fazer as movimentações)
+         ====================================================================== -->
     <center>
+        <VBox spacing="20" style="-fx-padding: 30 36 28 36;">
 
-        <VBox
-            spacing="20"
-            style="-fx-padding: 50;">
+            <!-- Header Principal -->
+            <HBox alignment="CENTER_LEFT" styleClass="main-header">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Movimentação de medicamentos" styleClass="header-title"/>
+                    <Label text="Registre saídas e retornos com rastreabilidade completa." styleClass="header-subtitle"/>
+                </VBox>
 
-            <Label
-                text="Área do Técnico de Enfermagem"
-                style="-fx-text-fill: #0D3B82;
-                       -fx-font-size: 28px;
-                       -fx-font-weight: bold;"/>
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <Label fx:id="acessoLabel" text="Acesso: Técnico de Enfermagem" styleClass="header-profile-badge"/>
+                    <Label prefHeight="38.0" prefWidth="38.0" text="GEM" styleClass="header-avatar"/>
+                </HBox>
+            </HBox>
 
-            <Label
-                text="Acesso às movimentações permitidas para o profissional."
-                style="-fx-text-fill: #53627A;
-                       -fx-font-size: 15px;"/>
-
-            <VBox
-                spacing="12"
-                style="-fx-background-color: white;
-                       -fx-background-radius: 14;
-                       -fx-padding: 30;
-                       -fx-border-color: #D9E1EC;
-                       -fx-border-radius: 14;">
-
-                <Label
-                    text="Permissões"
-                    style="-fx-text-fill: #0D3B82;
-                           -fx-font-size: 18px;
-                           -fx-font-weight: bold;"/>
-
-                <Label
-                    text="• Registrar saída de medicamentos"/>
-
-                <Label
-                    text="• Registrar retorno de medicamentos"/>
-
-                <Label
-                    text="• Consultar as telas permitidas pelo sistema"/>
+            <!-- Cards de Seleção de Operação (Saída / Retorno) -->
+            <HBox spacing="18">
+                <Button
+                    prefHeight="64.0"
+                    text="➔  Saída de medicamento&#10;     Dispensar item do estoque"
+                    onAction="#confirmarSaida"
+                    styleClass="op-button, op-card-dispensa"
+                    HBox.hgrow="ALWAYS"
+                    maxWidth="Infinity"/>
 
                 <Button
-                    text="Abrir movimentação"
-                    onAction="#abrirMovimentacao"
-                    style="-fx-background-color: #1976D2;
-                           -fx-background-radius: 8;
-                           -fx-text-fill: white;
-                           -fx-font-weight: bold;
-                           -fx-padding: 12 25;
-                           -fx-cursor: hand;"/>
+                    prefHeight="64.0"
+                    text="↺  Retorno ao estoque&#10;     Devolver item não utilizado"
+                    onAction="#confirmarRetorno"
+                    styleClass="op-button, op-card-retorno"
+                    HBox.hgrow="ALWAYS"
+                    maxWidth="Infinity"/>
+            </HBox>
 
-            </VBox>
+            <!-- Linha Principal de Conteúdo (Formulário + Resumo) -->
+            <HBox spacing="24" VBox.vgrow="ALWAYS">
+
+                <!-- PAINEL CENTRAL (Formulário) -->
+                <VBox styleClass="form-card" spacing="18" HBox.hgrow="ALWAYS">
+                    <Label text="Dados da dispensação / movimentação" styleClass="form-section-title"/>
+
+                    <!-- Grid de Campos Principais -->
+                    <GridPane hgap="18" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <!-- Linha 1 -->
+                        <Label text="SETOR DESTINATÁRIO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="PROFISSIONAL RESPONSÁVEL" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <ComboBox
+                            fx:id="setorComboBox"
+                            prefHeight="40.0"
+                            maxWidth="Infinity"
+                            promptText="Selecione o setor"
+                            styleClass="combo-box-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="1"/>
+
+                        <VBox spacing="3" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <TextField
+                                editable="false"
+                                prefHeight="40.0"
+                                promptText="Preenchido pela autenticação"
+                                styleClass="readonly-field"/>
+                            <Label text="Preenchido pela autenticação" styleClass="field-sublabel"/>
+                        </VBox>
+
+                        <!-- Linha 2 -->
+                        <Label text="MÉDICO PRESCRITOR / OBSERVAÇÃO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label text="DATA E HORA" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <TextField
+                            fx:id="motivoField"
+                            prefHeight="40.0"
+                            promptText="Dra. Beatriz Lima / Motivo da movimentação"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="3"/>
+
+                        <HBox alignment="CENTER_LEFT" spacing="6" styleClass="readonly-field" prefHeight="40.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <TextField
+                                editable="false"
+                                promptText="Registrada automaticamente na confirmação"
+                                HBox.hgrow="ALWAYS"
+                                style="-fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #64748B;"/>
+                            <Label text="📅" style="-fx-text-fill: #64748B; -fx-font-size: 14px;"/>
+                        </HBox>
+
+                        <rowConstraints>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                        </rowConstraints>
+                    </GridPane>
+
+                    <Separator styleClass="summary-divider">
+                        <VBox.margin>
+                            <Insets top="4" bottom="4"/>
+                        </VBox.margin>
+                    </Separator>
+
+                    <!-- Seção Medicamentos -->
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Medicamentos" styleClass="form-section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="1 item selecionado" styleClass="badge-pill"/>
+                    </HBox>
+
+                    <!-- Linha de Seleção do Medicamento e Quantidade -->
+                    <HBox spacing="14" alignment="BOTTOM_LEFT">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label"/>
+                            <TextField
+                                fx:id="medicamentoField"
+                                prefHeight="40.0"
+                                promptText="Digite o ID do medicamento no estoque (ex: 1)"
+                                styleClass="text-input-field"/>
+                        </VBox>
+
+                        <VBox spacing="6" prefWidth="130.0">
+                            <Label text="QUANTIDADE" styleClass="field-label"/>
+                            <TextField
+                                fx:id="quantidadeField"
+                                prefHeight="40.0"
+                                promptText="Ex: 12"
+                                styleClass="text-input-field"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Campo legado oculto para compatibilidade total -->
+                    <TextField fx:id="setorField" visible="false" managed="false"/>
+
+                    <Button
+                        text="+ Adicionar outro medicamento"
+                        styleClass="action-add-btn"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <!-- PAINEL LATERAL DIREITO (Resumo da Operação onde ele realiza a movimentação) -->
+                <VBox styleClass="summary-card" prefWidth="380.0" minWidth="360.0" spacing="16">
+                    <Label text="Resumo da Operação" styleClass="summary-title"/>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <!-- Responsável -->
+                    <VBox spacing="3">
+                        <Label text="RESPONSÁVEL" styleClass="summary-caption"/>
+                        <Label fx:id="resumoDispensadorLabel" text="Técnico de Enfermagem" styleClass="summary-primary-text"/>
+                        <Label text="Profissional Autenticado" styleClass="summary-secondary-text"/>
+                    </VBox>
+
+                    <!-- Destino & Data/Hora lado a lado -->
+                    <HBox spacing="18">
+                        <VBox spacing="3" HBox.hgrow="ALWAYS">
+                            <Label text="DESTINO" styleClass="summary-caption"/>
+                            <Label fx:id="resumoDestinoLabel" text="Selecione o setor" styleClass="summary-primary-text"/>
+                        </VBox>
+
+                        <VBox spacing="3" HBox.hgrow="ALWAYS">
+                            <Label text="DATA E HORA" styleClass="summary-caption"/>
+                            <Label fx:id="resumoDataHoraLabel" text="Será registrada automaticamente" styleClass="summary-secondary-text"/>
+                        </VBox>
+                    </HBox>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <!-- Itens Selecionados -->
+                    <VBox spacing="6">
+                        <Label text="ITENS SELECIONADOS" styleClass="summary-caption"/>
+                        <Label fx:id="resumoItemLabel" text="Nenhum item processado" styleClass="summary-item-name"/>
+                    </VBox>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Botão Principal de Confirmação de Saída -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="46.0"
+                        text="✔  Confirmar Saída"
+                        onAction="#confirmarSaida"
+                        styleClass="confirm-action-btn"/>
+
+                    <!-- Botão de Confirmação de Retorno -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="40.0"
+                        text="↺  Confirmar Retorno"
+                        onAction="#confirmarRetorno"
+                        styleClass="return-action-btn"/>
+
+                    <!-- Botão de Sair/Cancelar -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="38.0"
+                        text="Cancelar / Sair"
+                        onAction="#sair"
+                        styleClass="cancel-action-btn"/>
+                </VBox>
+
+            </HBox>
 
         </VBox>
-
     </center>
 
 </BorderPane>
