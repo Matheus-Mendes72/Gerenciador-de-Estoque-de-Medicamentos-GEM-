@@ -195,7 +195,16 @@ public class CadastroMedicamentoController {
     public void abrirMovimentacao() {
         try {
             Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
-            viewManager.mostrarMovimentacao(stage);
+            Usuario usuario = sessaoUsuario.getUsuarioAtual();
+            if (usuario != null && usuario.getCargo() != null) {
+                switch (usuario.getCargo()) {
+                    case COORDENADOR -> viewManager.mostrarCoordenador(stage);
+                    case FUNCIONARIO_CAF -> viewManager.mostrarMovimentacao(stage);
+                    case FUNCIONARIO_SAT -> viewManager.mostrarTecnico(stage);
+                }
+            } else {
+                viewManager.mostrarCoordenador(stage);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -45,7 +45,7 @@
                 <Separator styleClass="sidebar-separator"/>
             </VBox>
 
-            <!-- Navigation Links -->
+            <!-- Navigation Links (Apenas Movimentação e Estoque para Farmacêutico) -->
             <VBox spacing="8" styleClass="sidebar-nav-container">
                 <Button
                     maxWidth="Infinity"
