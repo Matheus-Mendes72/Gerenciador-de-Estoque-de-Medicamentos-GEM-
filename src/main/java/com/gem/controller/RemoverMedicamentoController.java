@@ -54,6 +54,9 @@ public class RemoverMedicamentoController {
 
     @FXML
     public void initialize() {
+        if (campoQuantidade != null) {
+            campoQuantidade.setEditable(true);
+        }
         configurarExibicaoMedicamentos();
         configurarSelecaoMedicamento();
         carregarUsuario();
@@ -153,7 +156,7 @@ public class RemoverMedicamentoController {
 
                     campoQuantidade.getItems().add(quantidade);
                 }
-                campoQuantidade.getSelectionModel().selectLast();
+                campoQuantidade.getSelectionModel().selectFirst();
             }
 
         } catch (RuntimeException e) {
@@ -178,36 +181,74 @@ public class RemoverMedicamentoController {
             exibirAlerta(
                     AlertType.WARNING,
                     "Medicamento não selecionado",
-                    "Selecione o medicamento que deseja remover do catálogo."
+                    "Selecione o medicamento que deseja remover."
             );
             return;
         }
 
-        // 1. Confirmação da remoção (Critério US-09)
-        Alert confirmacao = new Alert(AlertType.CONFIRMATION);
-        confirmacao.setTitle("Confirmar remoção");
-        confirmacao.setHeaderText("Confirma a remoção do medicamento do catálogo?");
-        confirmacao.setContentText(
-                "Medicamento: " + medicamento.getPrincipioAtivo() + " (" + medicamento.getDose() + ")"
-                + (motivo != null && !motivo.isBlank() ? "\nMotivo: " + motivo.trim() : "")
-        );
+        // 1. Obter e validar a quantidade exata informada
+        Integer quantidadeParaRemover = null;
+        if (campoQuantidade != null) {
+            if (campoQuantidade.getValue() != null) {
+                quantidadeParaRemover = campoQuantidade.getValue();
+            } else if (campoQuantidade.getEditor() != null && !campoQuantidade.getEditor().getText().isBlank()) {
+                try {
+                    quantidadeParaRemover = Integer.parseInt(campoQuantidade.getEditor().getText().trim());
+                } catch (NumberFormatException e) {
+                    exibirAlerta(
+                            AlertType.WARNING,
+                            "Quantidade inválida",
+                            "Informe uma quantidade numérica válida."
+                    );
+                    return;
+                }
+            }
+        }
 
-        if (confirmacao.showAndWait().orElse(ButtonType.CANCEL)
-                != ButtonType.OK) {
+        if (quantidadeParaRemover == null || quantidadeParaRemover <= 0) {
+            exibirAlerta(
+                    AlertType.WARNING,
+                    "Quantidade não informada",
+                    "Selecione ou digite a quantidade que deseja remover."
+            );
             return;
         }
 
-        // 2. Remoção do catálogo e exibição de mensagem de confirmação
+        if (motivo == null || motivo.trim().isBlank()) {
+            exibirAlerta(
+                    AlertType.WARNING,
+                    "Motivo obrigatório",
+                    "Informe o motivo da remoção antes de confirmar."
+            );
+            return;
+        }
+
+        // 2. Confirmação da remoção com a quantidade exata
+        Alert confirmacao = new Alert(AlertType.CONFIRMATION);
+        confirmacao.setTitle("Confirmar remoção");
+        confirmacao.setHeaderText("Confirma a remoção da quantidade informada?");
+        confirmacao.setContentText(
+                "Medicamento: " + medicamento.getPrincipioAtivo() + " (" + medicamento.getDose() + ")\n"
+                + "Quantidade a remover: " + quantidadeParaRemover + "\n"
+                + "Motivo: " + motivo.trim()
+        );
+
+        if (confirmacao.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+
+        // 3. Execução da remoção exata via serviço
         try {
-            removerMedicamentoService.removerDoCatalogo(
-                    medicamento.getId(),
-                    motivo != null ? motivo.trim() : ""
+            removerMedicamentoService.removerEstoque(
+                    medicamento,
+                    quantidadeParaRemover,
+                    motivo.trim()
             );
 
             exibirAlerta(
                     AlertType.INFORMATION,
                     "Remoção realizada",
-                    "Medicamento removido com sucesso!"
+                    "Foram removidas " + quantidadeParaRemover + " unidade(s) do medicamento com sucesso!"
             );
 
             campoMedicamento.getSelectionModel().clearSelection();

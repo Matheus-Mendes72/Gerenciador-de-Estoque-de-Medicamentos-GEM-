@@ -125,4 +125,67 @@ class RemoverMedicamentoServiceTest {
         assertEquals("Dipirona", disponiveis.get(0).getPrincipioAtivo());
         verify(medicamentoRepository, times(1)).findByAtivoTrue();
     }
+
+    @Test
+    @DisplayName("US-09: Deve remover quantidade parcial exata mantendo o medicamento ativo se ainda houver saldo")
+    void deveRemoverQuantidadeParcialExata() {
+        when(sessaoUsuario.getUsuarioAtual()).thenReturn(coordenador);
+        when(medicamentoRepository.findById(1)).thenReturn(Optional.of(medicamentoAtivo));
+
+        Estoque estoque = new Estoque();
+        estoque.setMedicamento(medicamentoAtivo);
+        estoque.setQuantidade(50);
+        when(estoqueRepository.findByMedicamentoIdOrderByIdAsc(1)).thenReturn(List.of(estoque));
+
+        medicamentoAtivo.setId(1);
+        removerMedicamentoService.removerEstoque(medicamentoAtivo, 20, "Descarte de 20 unidades danificadas");
+
+        assertEquals(30, estoque.getQuantidade(), "Estoque deve ser reduzido na quantidade exata de 20 unidades");
+        assertTrue(medicamentoAtivo.getAtivo(), "Medicamento deve continuar ativo pois ainda resta saldo");
+        verify(estoqueRepository, times(1)).save(estoque);
+        verify(historicoRepository, times(1)).save(any(Historico.class));
+        verify(medicamentoRepository, never()).save(any(Medicamento.class));
+    }
+
+    @Test
+    @DisplayName("US-09: Deve remover quantidade total e inativar medicamento quando estoque zerar")
+    void deveRemoverQuantidadeTotalEInativarMedicamento() {
+        when(sessaoUsuario.getUsuarioAtual()).thenReturn(coordenador);
+        when(medicamentoRepository.findById(1)).thenReturn(Optional.of(medicamentoAtivo));
+
+        Estoque estoque = new Estoque();
+        estoque.setMedicamento(medicamentoAtivo);
+        estoque.setQuantidade(50);
+        when(estoqueRepository.findByMedicamentoIdOrderByIdAsc(1)).thenReturn(List.of(estoque));
+
+        medicamentoAtivo.setId(1);
+        removerMedicamentoService.removerEstoque(medicamentoAtivo, 50, "Descarte do lote todo");
+
+        assertEquals(0, estoque.getQuantidade(), "Estoque deve ser zerado ao remover 50 unidades");
+        assertFalse(medicamentoAtivo.getAtivo(), "Medicamento deve ser inativado quando estoque chegar a zero");
+        verify(estoqueRepository, times(1)).save(estoque);
+        verify(medicamentoRepository, times(1)).save(medicamentoAtivo);
+        verify(historicoRepository, times(1)).save(any(Historico.class));
+    }
+
+    @Test
+    @DisplayName("US-09: Deve falhar ao tentar remover quantidade maior que o estoque disponível")
+    void deveFalhar_QuandoEstoqueInsuficiente() {
+        when(sessaoUsuario.getUsuarioAtual()).thenReturn(coordenador);
+        when(medicamentoRepository.findById(1)).thenReturn(Optional.of(medicamentoAtivo));
+
+        Estoque estoque = new Estoque();
+        estoque.setMedicamento(medicamentoAtivo);
+        estoque.setQuantidade(15);
+        when(estoqueRepository.findByMedicamentoIdOrderByIdAsc(1)).thenReturn(List.of(estoque));
+
+        medicamentoAtivo.setId(1);
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                removerMedicamentoService.removerEstoque(medicamentoAtivo, 20, "Tentativa de remover mais do que tem")
+        );
+
+        assertTrue(ex.getMessage().contains("Estoque insuficiente"));
+        verify(estoqueRepository, never()).save(any());
+        verify(historicoRepository, never()).save(any());
+    }
 }
