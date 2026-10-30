@@ -1,6 +1,7 @@
 package com.gem.view;
 
 import com.gem.model.Estoque;
+import com.gem.model.Medicamento;
 import com.gem.model.Usuario;
 import com.gem.reps.EstoqueRepository;
 import com.gem.security.SessaoUsuario;
@@ -221,34 +222,36 @@ public class EstoqueViewController {
         });
 
         // Coluna Ações: botão Remover
-        acoesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue()));
-        acoesColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button btnRemover = new Button("Remover");
+    acoesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue()));
+    acoesColumn.setCellFactory(col -> new TableCell<>() {
 
-            {
-                btnRemover.getStyleClass().add("action-remover-link");
-                btnRemover.setOnAction(event -> {
-                    abrirRemoverMedicamento();
-                });
-            }
+        private final Button btnRemover = new Button("Remover");
 
-            @Override
-            protected void updateItem(Estoque item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    HBox box = new HBox(btnRemover);
-                    box.setAlignment(Pos.CENTER);
-                    setGraphic(box);
-                }
+        {
+            btnRemover.getStyleClass().add("action-remover-link");
+            btnRemover.setOnAction(event -> {
+                Estoque item = getItem();
+                abrirRemoverMedicamento(item != null ? item.getMedicamento() : null);
+            });
+        }
+
+        @Override
+        protected void updateItem(Estoque item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setGraphic(null);
+            } else {
+                HBox box = new HBox(btnRemover);
+                box.setAlignment(Pos.CENTER);
+                setGraphic(box);
             }
+        }
         });
     }
 
     private void carregarDados() {
         try {
-            List<Estoque> itens = estoqueRepository.findAll();
+            List<Estoque> itens = estoqueRepository.findAllAtivos();
             listaEstoque.setAll(itens);
 
             listaFiltrada = new FilteredList<>(listaEstoque, p -> true);
@@ -318,14 +321,19 @@ public class EstoqueViewController {
 
     @FXML
     public void abrirRemoverMedicamento() {
+        abrirRemoverMedicamento(null);
+    }
+
+    private void abrirRemoverMedicamento(Medicamento medicamento) {
         try {
             Stage stage = (Stage) estoqueTable.getScene().getWindow();
-            viewManager.mostrarRemoverMedicamento(stage);
+            viewManager.mostrarRemoverMedicamento(stage, medicamento);
         } catch (Exception e) {
             e.printStackTrace();
             mostrarErro("Não foi possível abrir a remoção de medicamentos.");
         }
     }
+
 
     @FXML
     public void abrirMovimentacao() {
@@ -403,5 +411,51 @@ public class EstoqueViewController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+    @FXML
+    public void voltar() {
+        try {
+            Stage stage = obterStage();
+            if (stage != null) {
+                viewManager.voltar(stage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarErro("Não foi possível voltar à tela anterior.");
+        }
+    }
+
+    @FXML
+    private void minimizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.minimizar(stage);
+        }
+    }
+
+    @FXML
+    private void maximizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.alternarMaximizar(stage);
+        }
+    }
+
+    @FXML
+    private void fecharJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.fechar(stage);
+        }
+    }
+
+    private Stage obterStage() {
+        if (estoqueTable != null && estoqueTable.getScene() != null) {
+            return (Stage) estoqueTable.getScene().getWindow();
+        }
+        if (usuarioLabel != null && usuarioLabel.getScene() != null) {
+            return (Stage) usuarioLabel.getScene().getWindow();
+        }
+        return null;
     }
 }

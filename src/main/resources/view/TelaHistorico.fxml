@@ -23,10 +23,8 @@
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.gem.view.HistoricoViewController"
     stylesheets="@movimentacao.css"
-    maxHeight="900.0"
-    maxWidth="1440.0"
-    minHeight="900.0"
-    minWidth="1440.0"
+    minHeight="700.0"
+    minWidth="1100.0"
     prefHeight="900.0"
     prefWidth="1440.0">
 
@@ -113,14 +111,23 @@
 
             <!-- Header Principal -->
             <HBox alignment="CENTER_LEFT" styleClass="main-header">
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label text="Histórico de Movimentações" styleClass="header-title"/>
-                    <Label text="Consulte e filtre todas as movimentações registradas no estoque" styleClass="header-subtitle"/>
-                </VBox>
+                <HBox alignment="CENTER_LEFT" spacing="14" HBox.hgrow="ALWAYS">
+                    <Button text="← Voltar" onAction="#voltar" styleClass="nav-back-btn" focusTraversable="false"/>
+                    <VBox spacing="4">
+                        <Label text="Histórico de Movimentações" styleClass="header-title"/>
+                        <Label text="Consulte e filtre todas as movimentações registradas no estoque" styleClass="header-subtitle"/>
+                    </VBox>
+                </HBox>
 
                 <HBox alignment="CENTER_RIGHT" spacing="12">
                     <Label text="Acesso: Coordenador" styleClass="header-profile-badge"/>
                     <Label prefHeight="38.0" prefWidth="38.0" text="COORD" styleClass="header-avatar"/>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="6" styleClass="window-controls">
+                        <Button text="—" onAction="#minimizarJanela" styleClass="window-btn" focusTraversable="false"/>
+                        <Button text="□" onAction="#maximizarJanela" styleClass="window-btn" focusTraversable="false"/>
+                        <Button text="✕" onAction="#fecharJanela" styleClass="window-btn, window-btn-close" focusTraversable="false"/>
+                    </HBox>
                 </HBox>
             </HBox>
 

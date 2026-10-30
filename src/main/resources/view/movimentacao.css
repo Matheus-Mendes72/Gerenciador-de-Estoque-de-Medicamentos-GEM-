@@ -568,3 +568,65 @@
 }
 
 
+
+/* ==========================================================================
+   WINDOW CONTROLS & NAVIGATION CONTROLS (VOLTAR, MIN, MAX, FECHAR)
+   ========================================================================== */
+
+.window-controls {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-spacing: 6px;
+}
+
+.window-btn {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #475569;
+    -fx-font-family: "Segoe UI", "system-ui", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 28px;
+    -fx-min-width: 32px;
+    -fx-min-height: 28px;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+.window-btn:hover {
+    -fx-background-color: #E2E8F0;
+    -fx-text-fill: #0F172A;
+    -fx-border-color: #CBD5E1;
+}
+
+.window-btn-close:hover {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #DC2626;
+}
+
+.nav-back-btn {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #334155;
+    -fx-font-family: "Segoe UI", "system-ui", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-pref-height: 38px;
+    -fx-padding: 0 14px;
+    -fx-alignment: CENTER;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.nav-back-btn:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-text-fill: #0F172A;
+    -fx-border-color: #CBD5E1;
+}
