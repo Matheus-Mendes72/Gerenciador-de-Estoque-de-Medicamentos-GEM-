@@ -406,6 +406,50 @@ public class MovimentacaoViewController {
         }
     }
 
+    @FXML
+    private void voltar() {
+        try {
+            Stage stage = obterStage();
+            if (stage != null) {
+                viewManager.voltar(stage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarErro("Não foi possível voltar à tela anterior.");
+        }
+    }
+
+    @FXML
+    private void minimizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.minimizar(stage);
+        }
+    }
+
+    @FXML
+    private void maximizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.alternarMaximizar(stage);
+        }
+    }
+
+    @FXML
+    private void fecharJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.fechar(stage);
+        }
+    }
+
+    private Stage obterStage() {
+        if (usuarioLabel != null && usuarioLabel.getScene() != null) {
+            return (Stage) usuarioLabel.getScene().getWindow();
+        }
+        return null;
+    }
+
     private Integer obterEstoqueId() {
 
         if (medicamentoComboBox != null && medicamentoComboBox.getValue() != null) {
