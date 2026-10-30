@@ -142,8 +142,8 @@
                         </columnConstraints>
 
                         <!-- Linha 1: Setor e Medicamento -->
-                        <Label text="SETOR DESTINATÁRIO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="SETOR (DESTINO / ORIGEM)" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="MEDICAMENTO" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                         <ComboBox
                             fx:id="setorComboBox"
@@ -154,11 +154,12 @@
                             GridPane.columnIndex="0"
                             GridPane.rowIndex="1"/>
 
-                        <TextField
-                            fx:id="medicamentoField"
+                        <ComboBox
+                            fx:id="medicamentoComboBox"
                             prefHeight="40.0"
-                            promptText="Digite o ID do estoque (ex: 1)"
-                            styleClass="text-input-field"
+                            maxWidth="Infinity"
+                            promptText="Selecione o medicamento"
+                            styleClass="combo-box-field"
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="1"/>
 
@@ -192,6 +193,7 @@
 
                     <!-- Campo legado oculto para compatibilidade total -->
                     <TextField fx:id="setorField" visible="false" managed="false"/>
+                    <TextField fx:id="medicamentoField" visible="false" managed="false"/>
 
                     <Region VBox.vgrow="ALWAYS"/>
                 </VBox>
@@ -211,7 +213,7 @@
                     <!-- Destino & Data/Hora Reais -->
                     <HBox spacing="18">
                         <VBox spacing="3" HBox.hgrow="ALWAYS">
-                            <Label text="DESTINO" styleClass="summary-caption"/>
+                            <Label text="SETOR" styleClass="summary-caption"/>
                             <Label fx:id="resumoDestinoLabel" text="Selecione o setor" styleClass="summary-primary-text"/>
                         </VBox>
 

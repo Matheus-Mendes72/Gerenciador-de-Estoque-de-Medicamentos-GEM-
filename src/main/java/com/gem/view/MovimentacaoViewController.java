@@ -1,19 +1,25 @@
 package com.gem.view;
 
 import com.gem.controller.MovimentacaoController;
+import com.gem.model.Estoque;
 import com.gem.model.Historico;
 import com.gem.model.SetorHosp;
 import com.gem.model.Usuario;
+import com.gem.reps.EstoqueRepository;
 import com.gem.security.SessaoUsuario;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class MovimentacaoViewController {
@@ -43,6 +49,9 @@ public class MovimentacaoViewController {
     private TextField medicamentoField;
 
     @FXML
+    private ComboBox<Estoque> medicamentoComboBox;
+
+    @FXML
     private TextField quantidadeField;
 
     @FXML
@@ -54,15 +63,18 @@ public class MovimentacaoViewController {
     private final MovimentacaoController movimentacaoController;
     private final SessaoUsuario sessaoUsuario;
     private final ViewManager viewManager;
+    private final EstoqueRepository estoqueRepository;
 
     public MovimentacaoViewController(
             MovimentacaoController movimentacaoController,
             SessaoUsuario sessaoUsuario,
-            ViewManager viewManager
+            ViewManager viewManager,
+            EstoqueRepository estoqueRepository
     ) {
         this.movimentacaoController = movimentacaoController;
         this.sessaoUsuario = sessaoUsuario;
         this.viewManager = viewManager;
+        this.estoqueRepository = estoqueRepository;
     }
 
     @FXML
@@ -97,6 +109,53 @@ public class MovimentacaoViewController {
                 );
             }
         }
+
+        carregarComboMedicamentos();
+    }
+
+    private void carregarComboMedicamentos() {
+        if (medicamentoComboBox == null || estoqueRepository == null) {
+            return;
+        }
+
+        medicamentoComboBox.getItems().clear();
+
+        List<Estoque> lista = estoqueRepository.findAllAtivos();
+        medicamentoComboBox.setItems(FXCollections.observableArrayList(lista));
+
+        medicamentoComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Estoque estoque) {
+                if (estoque == null) {
+                    return "";
+                }
+                StringBuilder sb = new StringBuilder();
+                if (estoque.getPrincipioAtivo() != null) {
+                    sb.append(estoque.getPrincipioAtivo());
+                } else {
+                    sb.append("Item #").append(estoque.getId());
+                }
+
+                if (estoque.getDose() != null && !estoque.getDose().isBlank()) {
+                    sb.append(" ").append(estoque.getDose());
+                }
+
+                if (estoque.getLote() != null && !estoque.getLote().isBlank()) {
+                    sb.append(" | Lote: ").append(estoque.getLote());
+                }
+
+                if (estoque.getQuantidade() != null) {
+                    sb.append(" (Saldo: ").append(estoque.getQuantidade()).append(")");
+                }
+
+                return sb.toString();
+            }
+
+            @Override
+            public Estoque fromString(String string) {
+                return null;
+            }
+        });
     }
 
     @FXML
@@ -153,6 +212,7 @@ public class MovimentacaoViewController {
             );
 
             limparCampos();
+            carregarComboMedicamentos();
 
         } catch (Exception e) {
 
@@ -220,6 +280,7 @@ public class MovimentacaoViewController {
             );
 
             limparCampos();
+            carregarComboMedicamentos();
 
         } catch (Exception e) {
 
@@ -347,32 +408,25 @@ public class MovimentacaoViewController {
 
     private Integer obterEstoqueId() {
 
-        String texto =
-                medicamentoField.getText();
-
-        if (texto == null || texto.isBlank()) {
-
-            mostrarErro(
-                    "Informe o ID do medicamento."
-            );
-
-            return null;
+        if (medicamentoComboBox != null && medicamentoComboBox.getValue() != null) {
+            return medicamentoComboBox.getValue().getId();
         }
 
-        try {
+        if (medicamentoField != null) {
+            String texto = medicamentoField.getText();
 
-            return Integer.valueOf(
-                    texto.trim()
-            );
-
-        } catch (NumberFormatException e) {
-
-            mostrarErro(
-                    "O ID do medicamento deve ser numérico."
-            );
-
-            return null;
+            if (texto != null && !texto.isBlank()) {
+                try {
+                    return Integer.valueOf(texto.trim());
+                } catch (NumberFormatException e) {
+                    mostrarErro("O ID do medicamento deve ser numérico.");
+                    return null;
+                }
+            }
         }
+
+        mostrarErro("Selecione o medicamento.");
+        return null;
     }
 
     private Integer obterQuantidade() {
@@ -464,22 +518,35 @@ public class MovimentacaoViewController {
         }
 
         if (resumoItemLabel != null) {
-
+            Estoque est = historico.getEstoque();
+            String nome = "";
+            if (est != null) {
+                if (est.getPrincipioAtivo() != null) {
+                    nome = est.getPrincipioAtivo() + (est.getDose() != null ? " " + est.getDose() : "");
+                } else {
+                    nome = "Medicamento #" + est.getId();
+                }
+            }
             resumoItemLabel.setText(
-                    "Medicamento ID: "
-                            + historico
-                                    .getEstoque()
-                                    .getId()
-                            + " | Quantidade: "
-                            + historico.getQuantidade()
+                    nome + " | Qtd: " + historico.getQuantidade()
             );
         }
     }
 
     private void limparCampos() {
 
-        medicamentoField.clear();
-        quantidadeField.clear();
+        if (medicamentoComboBox != null) {
+            medicamentoComboBox.setValue(null);
+            medicamentoComboBox.getSelectionModel().clearSelection();
+        }
+
+        if (medicamentoField != null) {
+            medicamentoField.clear();
+        }
+
+        if (quantidadeField != null) {
+            quantidadeField.clear();
+        }
 
         if (motivoField != null) {
             motivoField.clear();
