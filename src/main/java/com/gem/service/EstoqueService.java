@@ -5,8 +5,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gem.model.Estoque;
 import com.gem.model.Permissao;
+import com.gem.model.TipoMed;
 import com.gem.model.Usuario;
 import com.gem.reps.EstoqueRepository;
+
+import java.text.Normalizer;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class EstoqueService {
@@ -81,6 +87,72 @@ public class EstoqueService {
         }
 
         estoqueRepository.deleteById(estoqueId);
+    }
+
+    // ------------------------------------------------------------------
+    // US-18 (busca por lote) e US-19 (filtro por classe terapêutica)
+    // ------------------------------------------------------------------
+
+    /**
+     * Um item só aparece na listagem se atender a TODOS os critérios ativos.
+     *
+     * @param termo   texto da barra de busca (princípio ativo, dose e/ou lote);
+     *                vários termos separados por espaço devem ser atendidos juntos
+     * @param classes classes terapêuticas selecionadas; vazio ou null = todas
+     */
+    public boolean corresponde(Estoque estoque, String termo, Set<TipoMed> classes) {
+        if (estoque == null) {
+            return false;
+        }
+
+        return correspondeClasse(estoque, classes) && correspondeBusca(estoque, termo);
+    }
+
+    public List<Estoque> filtrar(List<Estoque> itens, String termo, Set<TipoMed> classes) {
+        return itens.stream()
+                .filter(estoque -> corresponde(estoque, termo, classes))
+                .toList();
+    }
+
+    private boolean correspondeClasse(Estoque estoque, Set<TipoMed> classes) {
+        if (classes == null || classes.isEmpty()) {
+            return true;
+        }
+
+        TipoMed tipo = estoque.getTipoMed();
+        return tipo != null && classes.contains(tipo);
+    }
+
+    private boolean correspondeBusca(Estoque estoque, String termo) {
+        if (termo == null || termo.isBlank()) {
+            return true;
+        }
+
+        String alvo = normalizar(
+                valor(estoque.getPrincipioAtivo()) + " "
+                + valor(estoque.getDose()) + " "
+                + valor(estoque.getLote())
+        );
+
+        for (String token : normalizar(termo).split("\\s+")) {
+            if (!token.isEmpty() && !alvo.contains(token)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private String valor(String texto) {
+        return texto != null ? texto : "";
+    }
+
+    /** Ignora maiúsculas/minúsculas e acentos ("antibiótico" = "ANTIBIOTICO"). */
+    private String normalizar(String texto) {
+        return Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT)
+                .trim();
     }
 
     private void validarEstoque(Estoque estoque) {

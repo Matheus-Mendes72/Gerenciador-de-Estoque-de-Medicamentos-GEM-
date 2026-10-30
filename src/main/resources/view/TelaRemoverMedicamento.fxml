@@ -146,7 +146,7 @@
 
                         <!-- Linha 1: Medicamento e Quantidade -->
                         <Label text="MEDICAMENTO SELECIONADO *" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label text="QUANTIDADE DISPONÍVEL" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="QUANTIDADE A REMOVER *" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                         <ComboBox
                             fx:id="campoMedicamento"
@@ -161,7 +161,7 @@
                             fx:id="campoQuantidade"
                             prefHeight="40.0"
                             maxWidth="Infinity"
-                            promptText="Qtd."
+                            promptText="Qtd. a remover"
                             styleClass="combo-box-field"
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="1"/>

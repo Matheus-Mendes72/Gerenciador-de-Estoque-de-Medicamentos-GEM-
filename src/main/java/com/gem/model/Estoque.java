@@ -1,5 +1,7 @@
 package com.gem.model;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -32,6 +34,13 @@ public class Estoque {
 
     @Column(nullable = false)
     private Integer quantidade;
+
+    @Column(name = "data_validade")
+    private LocalDate dataValidade;
+
+    public LocalDate getDataValidade() { return this.dataValidade; }
+
+    public void setDataValidade(LocalDate dataValidade) { this.dataValidade = dataValidade; }
 
     public Estoque() {
     }
