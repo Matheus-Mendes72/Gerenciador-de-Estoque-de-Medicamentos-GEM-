@@ -11,12 +11,10 @@ import com.gem.controller.RemoverMedicamentoController;
 import com.gem.model.Medicamento;
 import com.gem.security.SessaoUsuario;
 
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 @Component
 public class ViewManager {
@@ -191,15 +189,15 @@ public class ViewManager {
         stage.setResizable(true);
         stage.setMinWidth(1100);
         stage.setMinHeight(700);
-        stage.show();
 
-        // Restaura o estado de maximizado usando o campo proprio do ViewManager.
-        // PauseTransition de 50ms garante que o maximize e aplicado apos o JavaFX
-        // concluir o redimensionamento causado pelo prefWidth/prefHeight dos FXMLs.
-        if (janelaMaximizada) {
-            PauseTransition pausa = new PauseTransition(Duration.millis(50));
-            pausa.setOnFinished(e -> stage.setMaximized(true));
-            pausa.play();
+        if (!stage.isShowing()) {
+            // Primeira exibicao: mostra a janela normalmente
+            stage.show();
+        } else if (janelaMaximizada) {
+            // Janela ja visivel e estava maximizada: reaplica sem chamar show()
+            // pois show() em janela UNDECORATED ja visivel reseta o estado no Windows
+            stage.setMaximized(false);
+            stage.setMaximized(true);
         }
     }
 
