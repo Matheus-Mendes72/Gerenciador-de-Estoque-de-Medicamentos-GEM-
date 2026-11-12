@@ -152,6 +152,14 @@
     -fx-border-color: #2563EB;
 }
 
+.op-card-dispensa:focused,
+.op-card-dispensa:pressed {
+    -fx-background-color: #DBEAFE;
+    -fx-border-color: #1D4ED8;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.3), 10, 0, 0, 2);
+}
+
 .op-card-retorno {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E2E8F0;
@@ -164,6 +172,14 @@
 .op-card-retorno:hover {
     -fx-background-color: #F8FAFC;
     -fx-border-color: #10B981;
+}
+
+.op-card-retorno:focused,
+.op-card-retorno:pressed {
+    -fx-background-color: #D1FAE5;
+    -fx-border-color: #059669;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(5, 150, 105, 0.3), 10, 0, 0, 2);
 }
 
 /* ==========================================================================

@@ -119,7 +119,7 @@
             <HBox spacing="18">
                 <Button
                     prefHeight="64.0"
-                    text="➔  Dispensação de Medicamento&#10;     Registrar saída de item do estoque"
+                    text="➔  Dispensação de Medicamento&#10;"
                     onAction="#confirmarSaida"
                     styleClass="op-button, op-card-dispensa"
                     HBox.hgrow="ALWAYS"
@@ -127,7 +127,7 @@
 
                 <Button
                     prefHeight="64.0"
-                    text="↺  Retorno ao Estoque&#10;     Registrar devolução de item não utilizado"
+                    text="↺  Retorno de Medicamento&#10;"
                     onAction="#confirmarRetorno"
                     styleClass="op-button, op-card-retorno"
                     HBox.hgrow="ALWAYS"
