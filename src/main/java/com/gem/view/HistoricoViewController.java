@@ -155,15 +155,35 @@ public class HistoricoViewController {
     private void abrirMovimentacao() {
 
         try {
-
+          
+            Usuario usuario = sessaoUsuario.getUsuarioAtual();
             Stage stage = (Stage) usuarioLabel.getScene().getWindow();
 
-            viewManager.mostrarMovimentacao(stage);
+            switch (usuario.getCargo()) {
+                case COORDENADOR -> viewManager.mostrarCoordenador(stage);
+                case FUNCIONARIO_CAF -> viewManager.mostrarMovimentacao(stage);
+                case FUNCIONARIO_SAT -> viewManager.mostrarTecnico(stage);
+            }
 
         } catch (Exception e) {
 
             e.printStackTrace();
             mostrarErro("Não foi possível abrir a movimentação.");
+        }
+    }
+
+    @FXML
+    private void abrirEstoque() {
+
+        try {
+
+            Stage stage = (Stage) usuarioLabel.getScene().getWindow();
+            viewManager.mostrarEstoque(stage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            mostrarErro("Não foi possível abrir a tela de estoque.");
         }
     }
 
@@ -382,5 +402,49 @@ public class HistoricoViewController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void voltar() {
+        try {
+            Stage stage = obterStage();
+            if (stage != null) {
+                viewManager.voltar(stage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarErro("Não foi possível voltar à tela anterior.");
+        }
+    }
+
+    @FXML
+    private void minimizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.minimizar(stage);
+        }
+    }
+
+    @FXML
+    private void maximizarJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.alternarMaximizar(stage);
+        }
+    }
+
+    @FXML
+    private void fecharJanela() {
+        Stage stage = obterStage();
+        if (stage != null) {
+            viewManager.fechar(stage);
+        }
+    }
+
+    private Stage obterStage() {
+        if (usuarioLabel != null && usuarioLabel.getScene() != null) {
+            return (Stage) usuarioLabel.getScene().getWindow();
+        }
+        return null;
     }
 }

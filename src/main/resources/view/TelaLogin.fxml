@@ -12,12 +12,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane
     xmlns="http://javafx.com/javafx/27"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.gem.view.LoginController"
+    stylesheets="@movimentacao.css"
+    minHeight="700.0"
+    minWidth="1100.0"
     prefHeight="900.0"
     prefWidth="1440.0"
     style="-fx-background-color: #F5F7FA;">
@@ -206,4 +210,10 @@
 
     </GridPane>
 
+        <!-- Controles de Janela do Login -->
+    <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="window-controls" AnchorPane.topAnchor="16.0" AnchorPane.rightAnchor="20.0">
+        <Button text="&#x2014;" onAction="#minimizarJanela" styleClass="window-btn" focusTraversable="false"/>
+        <Button text="&#x25A1;" onAction="#maximizarJanela" styleClass="window-btn" focusTraversable="false"/>
+        <Button text="&#x2715;" onAction="#fecharJanela" styleClass="window-btn, window-btn-close" focusTraversable="false"/>
+    </HBox>
 </AnchorPane>

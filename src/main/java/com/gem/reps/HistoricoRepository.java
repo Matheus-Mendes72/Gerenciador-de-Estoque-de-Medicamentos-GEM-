@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public interface HistoricoRepository extends JpaRepository<Historico, Integer> {
 
     List<Historico> findByTipoMovOrderByDataMovDesc(TipoMov tipoMov);

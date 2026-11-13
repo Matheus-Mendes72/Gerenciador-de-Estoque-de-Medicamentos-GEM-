@@ -14,6 +14,8 @@ import com.gem.model.SetorHosp;
 import com.gem.reps.EstoqueRepository;
 import com.gem.reps.HistoricoRepository;
 
+import com.gem.dto.SaidaMedicamentoDTO;
+
 @Service
 public class MovimentacaoService {
 
@@ -29,6 +31,56 @@ public class MovimentacaoService {
         this.estoqueRepository = estoqueRepository;
         this.historicoRepository = historicoRepository;
         this.permissaoService = permissaoService;
+    }
+
+    @Transactional
+    public Historico registrarSaida(
+            Usuario usuario,
+            SaidaMedicamentoDTO dto) {
+
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não informado ou não autenticado.");
+        }
+
+        if (dto == null) {
+            throw new IllegalArgumentException("Dados da saída de medicamento não informados.");
+        }
+
+        permissaoService.exigirPermissao(
+                usuario,
+                Permissao.REGISTRAR_SAIDA
+        );
+
+        dto.validarCamposObrigatorios();
+
+        Estoque estoque = buscarEstoquePorPrincipioAtivo(dto.getPrincipioAtivo());
+
+        if (estoque.getQuantidade() < dto.getQuantidade()) {
+            throw new IllegalArgumentException(
+                    "Quantidade disponível insuficiente em estoque. Disponível: " + estoque.getQuantidade()
+            );
+        }
+
+        int quantidadePre = estoque.getQuantidade();
+        int quantidadePos = quantidadePre - dto.getQuantidade();
+
+        estoque.setQuantidade(quantidadePos);
+        estoqueRepository.save(estoque);
+
+        Historico historico = new Historico();
+        historico.setTipoMov(TipoMov.SAIDA);
+        historico.setEstoque(estoque);
+        historico.setQuantidade(dto.getQuantidade());
+        historico.setDataMov(LocalDateTime.now());
+        historico.setUsuario(usuario);
+        historico.setSetorHosp(dto.getSetorDestino());
+        historico.setNomeFunc(dto.getResponsavelRetirada());
+        historico.setMedicoPrescritor(dto.getMedicoPrescritor());
+        historico.setMotivoObs(dto.getMotivo());
+        historico.setQuantidadePre(quantidadePre);
+        historico.setQuantidadePos(quantidadePos);
+
+        return historicoRepository.save(historico);
     }
 
     @Transactional
@@ -90,6 +142,12 @@ public class MovimentacaoService {
                 Permissao.REGISTRAR_RETORNO
         );
 
+        if (setor == null) {
+            throw new IllegalArgumentException(
+                    "O setor de origem do retorno é obrigatório."
+            );
+        }
+
         Estoque estoque = buscarEstoque(estoqueId);
 
         validarQuantidade(quantidade);
@@ -127,6 +185,16 @@ public class MovimentacaoService {
                 );
     }
 
+    private Estoque buscarEstoquePorPrincipioAtivo(String principioAtivo) {
+
+        return estoqueRepository.findFirstByPrincipioAtivoIgnoreCase(principioAtivo)
+                .orElseThrow(() ->
+                    new IllegalArgumentException(
+                        "Medicamento não encontrado com o princípio ativo informado: " + principioAtivo
+                    )
+                );
+    }
+
     private void validarQuantidade(Integer quantidade) {
 
         if (quantidade == null || quantidade <= 0) {
@@ -160,7 +228,15 @@ public class MovimentacaoService {
          * nomeFunc deve seguir o que vocês definiram no modelo.
          */
         historico.setNomeFunc(
-                usuario.getCargo().name()
+                usuario != null && usuario.getCargo() != null
+                        ? usuario.getCargo().name()
+                        : "USUARIO"
+        );
+
+        historico.setMedicoPrescritor(
+                tipoMov == TipoMov.RETORNO
+                        ? "NÃO APLICÁVEL (RETORNO)"
+                        : "NÃO INFORMADO"
         );
 
         historico.setMotivoObs(motivo);
