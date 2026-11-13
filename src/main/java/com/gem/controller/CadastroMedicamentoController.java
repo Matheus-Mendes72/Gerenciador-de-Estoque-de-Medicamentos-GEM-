@@ -180,9 +180,35 @@ public class CadastroMedicamentoController {
     public void voltar() {
         try {
             Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
-            viewManager.mostrarEstoque(stage);
+            if (stage != null) {
+                viewManager.voltar(stage);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void minimizarJanela() {
+        Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+        if (stage != null) {
+            viewManager.minimizar(stage);
+        }
+    }
+
+    @FXML
+    private void maximizarJanela() {
+        Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+        if (stage != null) {
+            viewManager.alternarMaximizar(stage);
+        }
+    }
+
+    @FXML
+    private void fecharJanela() {
+        Stage stage = (Stage) campoPrincipioAtivo.getScene().getWindow();
+        if (stage != null) {
+            viewManager.fechar(stage);
         }
     }
 

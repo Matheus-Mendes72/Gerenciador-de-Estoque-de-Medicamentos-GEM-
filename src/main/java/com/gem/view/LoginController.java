@@ -189,4 +189,27 @@ public class LoginController {
 
         alert.showAndWait();
     }
+    @FXML
+    private void minimizarJanela() {
+        if (cargoComboBox != null && cargoComboBox.getScene() != null) {
+            Stage stage = (Stage) cargoComboBox.getScene().getWindow();
+            viewManager.minimizar(stage);
+        }
+    }
+
+    @FXML
+    private void maximizarJanela() {
+        if (cargoComboBox != null && cargoComboBox.getScene() != null) {
+            Stage stage = (Stage) cargoComboBox.getScene().getWindow();
+            viewManager.alternarMaximizar(stage);
+        }
+    }
+
+    @FXML
+    private void fecharJanela() {
+        if (cargoComboBox != null && cargoComboBox.getScene() != null) {
+            Stage stage = (Stage) cargoComboBox.getScene().getWindow();
+            viewManager.fechar(stage);
+        }
+    }
 }

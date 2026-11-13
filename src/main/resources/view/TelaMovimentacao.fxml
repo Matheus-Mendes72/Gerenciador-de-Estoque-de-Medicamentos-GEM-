@@ -21,10 +21,8 @@
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.gem.view.MovimentacaoViewController"
     stylesheets="@movimentacao.css"
-    maxHeight="900.0"
-    maxWidth="1440.0"
-    minHeight="900.0"
-    minWidth="1440.0"
+    minHeight="700.0"
+    minWidth="1100.0"
     prefHeight="900.0"
     prefWidth="1440.0">
 
@@ -104,14 +102,23 @@
 
             <!-- Header Principal -->
             <HBox alignment="CENTER_LEFT" styleClass="main-header">
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label text="Movimentação de medicamentos" styleClass="header-title"/>
-                    <Label text="Registre saídas e retornos com rastreabilidade completa." styleClass="header-subtitle"/>
-                </VBox>
+                <HBox alignment="CENTER_LEFT" spacing="14" HBox.hgrow="ALWAYS">
+                    <Button text="← Voltar" onAction="#voltar" styleClass="nav-back-btn" focusTraversable="false"/>
+                    <VBox spacing="4">
+                        <Label text="Movimentação de medicamentos" styleClass="header-title"/>
+                        <Label text="Registre saídas e retornos com rastreabilidade completa." styleClass="header-subtitle"/>
+                    </VBox>
+                </HBox>
 
                 <HBox alignment="CENTER_RIGHT" spacing="12">
                     <Label fx:id="acessoLabel" text="Acesso: Farmacêutico" styleClass="header-profile-badge"/>
                     <Label prefHeight="38.0" prefWidth="38.0" text="CAF" styleClass="header-avatar"/>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="6" styleClass="window-controls">
+                        <Button text="—" onAction="#minimizarJanela" styleClass="window-btn" focusTraversable="false"/>
+                        <Button text="□" onAction="#maximizarJanela" styleClass="window-btn" focusTraversable="false"/>
+                        <Button text="✕" onAction="#fecharJanela" styleClass="window-btn, window-btn-close" focusTraversable="false"/>
+                    </HBox>
                 </HBox>
             </HBox>
 
@@ -149,8 +156,8 @@
                         </columnConstraints>
 
                         <!-- Linha 1: Setor e Medicamento -->
-                        <Label text="SETOR DESTINATÁRIO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label text="MEDICAMENTO / ID DO ESTOQUE" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="SETOR (DESTINO / ORIGEM)" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="MEDICAMENTO" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                         <ComboBox
                             fx:id="setorComboBox"
@@ -161,11 +168,12 @@
                             GridPane.columnIndex="0"
                             GridPane.rowIndex="1"/>
 
-                        <TextField
-                            fx:id="medicamentoField"
+                        <ComboBox
+                            fx:id="medicamentoComboBox"
                             prefHeight="40.0"
-                            promptText="Digite o ID do estoque (ex: 1)"
-                            styleClass="text-input-field"
+                            maxWidth="Infinity"
+                            promptText="Selecione o medicamento"
+                            styleClass="combo-box-field"
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="1"/>
 
@@ -199,6 +207,7 @@
 
                     <!-- Campo legado oculto para compatibilidade total -->
                     <TextField fx:id="setorField" visible="false" managed="false"/>
+                    <TextField fx:id="medicamentoField" visible="false" managed="false"/>
 
                     <Region VBox.vgrow="ALWAYS"/>
                 </VBox>
@@ -218,7 +227,7 @@
                     <!-- Destino & Data/Hora Reais -->
                     <HBox spacing="18">
                         <VBox spacing="3" HBox.hgrow="ALWAYS">
-                            <Label text="DESTINO" styleClass="summary-caption"/>
+                            <Label text="SETOR" styleClass="summary-caption"/>
                             <Label fx:id="resumoDestinoLabel" text="Selecione o setor" styleClass="summary-primary-text"/>
                         </VBox>
 
