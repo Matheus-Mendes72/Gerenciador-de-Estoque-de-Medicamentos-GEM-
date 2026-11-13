@@ -5,6 +5,9 @@ import java.io.IOException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.gem.controller.RemoverMedicamentoController;
+import com.gem.model.Medicamento;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -124,14 +127,17 @@ public class ViewManager {
     }
 
     public void mostrarRemoverMedicamento(Stage stage) throws IOException {
+        mostrarRemoverMedicamento(stage, null);
+    }
 
-        FXMLLoader loader =
-                criarLoader("/view/TelaRemoverMedicamento.fxml");
-
+    public void mostrarRemoverMedicamento(Stage stage, Medicamento medicamento) throws IOException {
+        FXMLLoader loader = criarLoader("/view/TelaRemoverMedicamento.fxml");
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);
+        RemoverMedicamentoController controller = loader.getController();
+        controller.preselecionarMedicamento(medicamento);
 
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("GEM - Remoção de Medicamentos");
         stage.setResizable(false);

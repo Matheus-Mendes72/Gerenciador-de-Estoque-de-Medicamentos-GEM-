@@ -22,8 +22,7 @@ public class CoordenadorViewController {
 
     public CoordenadorViewController(
             SessaoUsuario sessaoUsuario,
-            ViewManager viewManager
-    ) {
+            ViewManager viewManager) {
         this.sessaoUsuario = sessaoUsuario;
         this.viewManager = viewManager;
     }
@@ -43,8 +42,7 @@ public class CoordenadorViewController {
 
         try {
 
-            Stage stage =
-                    (Stage) root.getScene().getWindow();
+            Stage stage = (Stage) root.getScene().getWindow();
 
             viewManager.mostrarMovimentacao(stage);
 
@@ -53,8 +51,7 @@ public class CoordenadorViewController {
             e.printStackTrace();
 
             mostrarErro(
-                    "Não foi possível abrir a movimentação."
-            );
+                    "Não foi possível abrir a movimentação.");
         }
     }
 
@@ -65,8 +62,7 @@ public class CoordenadorViewController {
 
         try {
 
-            Stage stage =
-                    (Stage) root.getScene().getWindow();
+            Stage stage = (Stage) root.getScene().getWindow();
 
             viewManager.mostrarLogin(stage);
 
@@ -78,16 +74,13 @@ public class CoordenadorViewController {
 
     private void validarCoordenador() {
 
-        Usuario usuario =
-                sessaoUsuario.getUsuarioAtual();
+        Usuario usuario = sessaoUsuario.getUsuarioAtual();
 
         if (usuario == null
-                || usuario.getCargo()
-                        != CargoProfissional.COORDENADOR) {
+                || usuario.getCargo() != CargoProfissional.COORDENADOR) {
 
             throw new SecurityException(
-                    "Acesso permitido somente ao coordenador."
-            );
+                    "Acesso permitido somente ao coordenador.");
         }
     }
 
@@ -108,11 +101,9 @@ public class CoordenadorViewController {
     }
 
     private void mostrarErro(
-            String mensagem
-    ) {
+            String mensagem) {
 
-        Alert alert =
-                new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
 
         alert.setTitle("GEM");
         alert.setHeaderText(null);

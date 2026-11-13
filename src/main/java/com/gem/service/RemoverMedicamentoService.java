@@ -21,6 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RemoverMedicamentoService {
 
+    /** Tamanho da coluna historico.motivo_obs (VARCHAR(100)). */
+    public static final int MOTIVO_MAX_LENGTH = 100;
+
+    private static final String PREFIXO_CATALOGO = "REMOÇÃO DO CATÁLOGO: ";
+
     private final EstoqueRepository estoqueRepository;
     private final MedicamentoRepository medicamentoRepository;
     private final HistoricoRepository historicoRepository;
@@ -58,13 +63,9 @@ public class RemoverMedicamentoService {
     public int obterQuantidadeDisponivel(Medicamento medicamento) {
         validarMedicamento(medicamento);
 
-        return estoqueRepository
-                .findByMedicamentoIdOrderByIdAsc(medicamento.getId())
-                .stream()
-                .filter(estoque -> estoque.getQuantidade() != null)
-                .mapToInt(Estoque::getQuantidade)
-                .filter(quantidade -> quantidade > 0)
-                .sum();
+        return somarSaldo(
+                estoqueRepository.findByMedicamentoIdOrderByIdAsc(medicamento.getId())
+        );
     }
 
     @Transactional
@@ -82,6 +83,13 @@ public class RemoverMedicamentoService {
             throw new IllegalArgumentException("Identificador do medicamento é obrigatório.");
         }
 
+        // Validado antes de qualquer escrita, para não falhar no meio da transação
+        // por estouro da coluna motivo_obs.
+        String observacao = (motivo != null && !motivo.isBlank())
+                ? PREFIXO_CATALOGO + motivo.trim()
+                : "REMOÇÃO DO CATÁLOGO PELO COORDENADOR";
+        validarTamanhoMotivo(observacao, MOTIVO_MAX_LENGTH - PREFIXO_CATALOGO.length());
+
         Medicamento medicamento = medicamentoRepository.findById(medicamentoId)
                 .orElseThrow(() -> new IllegalArgumentException("Medicamento não encontrado."));
 
@@ -89,7 +97,7 @@ public class RemoverMedicamentoService {
             throw new IllegalStateException("Medicamento já se encontra inativo no catálogo.");
         }
 
-        // 1. Inativa o medicamento do catálogo (Soft delete)
+        // 1. Inativa o medicamento do catálogo (soft delete)
         medicamento.setAtivo(false);
         Medicamento medicamentoSalvo = medicamentoRepository.save(medicamento);
 
@@ -102,22 +110,7 @@ public class RemoverMedicamentoService {
                 estoque.setQuantidade(0);
                 estoqueRepository.save(estoque);
 
-                Historico historico = new Historico();
-                historico.setTipoMov(TipoMov.SAIDA);
-                historico.setEstoque(estoque);
-                historico.setQuantidade(qtdAtual);
-                historico.setDataMov(LocalDateTime.now());
-                historico.setUsuario(usuario);
-                historico.setSetorHosp(SetorHosp.EMERGENCIA);
-                historico.setNomeFunc(usuario != null && usuario.getCargo() != null ? usuario.getCargo().name() : "COORDENADOR");
-                historico.setMedicoPrescritor("NÃO APLICÁVEL (REMOÇÃO)");
-                historico.setMotivoObs(motivo != null && !motivo.isBlank()
-                        ? "REMOÇÃO DO CATÁLOGO: " + motivo.trim()
-                        : "REMOÇÃO DO CATÁLOGO PELO COORDENADOR");
-                historico.setQuantidadePre(qtdAtual);
-                historico.setQuantidadePos(0);
-
-                historicoRepository.save(historico);
+                registrarHistoricoRemocao(usuario, estoque, qtdAtual, 0, observacao);
             }
         }
 
@@ -153,6 +146,9 @@ public class RemoverMedicamentoService {
             throw new IllegalArgumentException("O motivo da remoção é obrigatório.");
         }
 
+        String motivoLimpo = motivo.trim();
+        validarTamanhoMotivo(motivoLimpo, MOTIVO_MAX_LENGTH);
+
         Medicamento medicamentoPersistido =
                 medicamentoRepository.findById(medicamento.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Medicamento não encontrado."));
@@ -164,16 +160,19 @@ public class RemoverMedicamentoService {
         List<Estoque> estoques =
                 estoqueRepository.findByMedicamentoIdOrderByIdAsc(medicamentoPersistido.getId());
 
-        int quantidadeDisponivel = estoques.stream()
-                .filter(estoque -> estoque.getQuantidade() != null)
-                .mapToInt(Estoque::getQuantidade)
-                .filter(quantidade -> quantidade > 0)
-                .sum();
+        int quantidadeDisponivel = somarSaldo(estoques);
+
+        if (quantidadeDisponivel <= 0) {
+            throw new IllegalArgumentException(
+                    "Medicamento sem saldo em estoque. Remova-o do catálogo."
+            );
+        }
 
         if (quantidadeDisponivel < quantidadeRetirada) {
             throw new IllegalArgumentException("Estoque insuficiente. Disponível: " + quantidadeDisponivel + ".");
         }
 
+        // Baixa distribuída entre os lotes, do mais antigo para o mais novo.
         int restante = quantidadeRetirada;
 
         for (Estoque estoque : estoques) {
@@ -192,33 +191,77 @@ public class RemoverMedicamentoService {
             estoque.setQuantidade(posterior);
             estoqueRepository.save(estoque);
 
-            Historico historico = new Historico();
-            historico.setTipoMov(TipoMov.SAIDA);
-            historico.setEstoque(estoque);
-            historico.setQuantidade(retirada);
-            historico.setDataMov(LocalDateTime.now());
-            historico.setUsuario(usuario);
-            historico.setSetorHosp(SetorHosp.EMERGENCIA);
-            historico.setNomeFunc(usuario != null && usuario.getCargo() != null ? usuario.getCargo().name() : "COORDENADOR");
-            historico.setMedicoPrescritor("NÃO APLICÁVEL (REMOÇÃO)");
-            historico.setMotivoObs(motivo.trim());
-            historico.setQuantidadePre(quantidadeAtual);
-            historico.setQuantidadePos(posterior);
-
-            historicoRepository.save(historico);
+            registrarHistoricoRemocao(usuario, estoque, retirada, posterior, quantidadeAtual, motivoLimpo);
 
             restante -= retirada;
         }
 
-        boolean existeSaldo = estoqueRepository
-                .findByMedicamentoIdOrderByIdAsc(medicamentoPersistido.getId())
-                .stream()
-                .anyMatch(estoque -> estoque.getQuantidade() != null && estoque.getQuantidade() > 0);
+        // Calculado a partir do saldo já conhecido, sem depender de nova leitura.
+        boolean existeSaldo = quantidadeDisponivel > quantidadeRetirada;
 
         if (!existeSaldo) {
             medicamentoPersistido.setAtivo(false);
             medicamentoRepository.save(medicamentoPersistido);
         }
+    }
+
+    // ------------------------------------------------------------------
+    // Auxiliares
+    // ------------------------------------------------------------------
+
+    private int somarSaldo(List<Estoque> estoques) {
+        return estoques.stream()
+                .filter(estoque -> estoque.getQuantidade() != null)
+                .mapToInt(Estoque::getQuantidade)
+                .filter(quantidade -> quantidade > 0)
+                .sum();
+    }
+
+    private void validarTamanhoMotivo(String texto, int maximoParaMotivo) {
+        if (texto.length() > MOTIVO_MAX_LENGTH) {
+            throw new IllegalArgumentException(
+                    "O motivo deve ter no máximo " + maximoParaMotivo + " caracteres."
+            );
+        }
+    }
+
+    /** Remoção total de um lote (catálogo): quantidade removida = saldo anterior. */
+    private void registrarHistoricoRemocao(
+            Usuario usuario,
+            Estoque estoque,
+            int quantidadeRemovida,
+            int quantidadePos,
+            String observacao) {
+
+        registrarHistoricoRemocao(usuario, estoque, quantidadeRemovida, quantidadePos, quantidadeRemovida, observacao);
+    }
+
+    private void registrarHistoricoRemocao(
+            Usuario usuario,
+            Estoque estoque,
+            int quantidadeRemovida,
+            int quantidadePos,
+            int quantidadePre,
+            String observacao) {
+
+        Historico historico = new Historico();
+        historico.setTipoMov(TipoMov.SAIDA);
+        historico.setEstoque(estoque);
+        historico.setQuantidade(quantidadeRemovida);
+        historico.setDataMov(LocalDateTime.now());
+        historico.setUsuario(usuario);
+        historico.setSetorHosp(SetorHosp.EMERGENCIA);
+        historico.setNomeFunc(
+                usuario != null && usuario.getCargo() != null
+                        ? usuario.getCargo().name()
+                        : "COORDENADOR"
+        );
+        historico.setMedicoPrescritor("NÃO APLICÁVEL (REMOÇÃO)");
+        historico.setMotivoObs(observacao);
+        historico.setQuantidadePre(quantidadePre);
+        historico.setQuantidadePos(quantidadePos);
+
+        historicoRepository.save(historico);
     }
 
     private void validarMedicamento(Medicamento medicamento) {

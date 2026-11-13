@@ -75,4 +75,8 @@ public class Medicamento {
     public void setLaboratorio(String laboratorio) {
         this.laboratorio = laboratorio;
     }
+
+    public void setId(Integer id) { 
+        this.id = id; 
+    }
 }
