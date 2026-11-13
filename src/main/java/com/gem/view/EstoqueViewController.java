@@ -1,10 +1,13 @@
 package com.gem.view;
 
+import com.gem.model.CargoProfissional;
 import com.gem.model.Estoque;
 import com.gem.model.Medicamento;
+import com.gem.model.TipoMed;
 import com.gem.model.Usuario;
 import com.gem.reps.EstoqueRepository;
 import com.gem.security.SessaoUsuario;
+import com.gem.service.EstoqueService;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,21 +18,28 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class EstoqueViewController {
+
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML
     private Label usuarioLabel;
@@ -52,6 +62,13 @@ public class EstoqueViewController {
     @FXML
     private TextField campoBusca;
 
+    /** Container onde são criados os checkboxes de classe terapêutica (US-19). */
+    @FXML
+    private HBox filtroClasseBox;
+
+    @FXML
+    private Button btnLimparFiltros;
+
     @FXML
     private TableView<Estoque> estoqueTable;
 
@@ -68,6 +85,9 @@ public class EstoqueViewController {
     private TableColumn<Estoque, String> loteColumn;
 
     @FXML
+    private TableColumn<Estoque, String> validadeColumn;
+
+    @FXML
     private TableColumn<Estoque, Estoque> statusColumn;
 
     @FXML
@@ -80,17 +100,24 @@ public class EstoqueViewController {
     private Button btnHistorico;
 
     private final EstoqueRepository estoqueRepository;
+    private final EstoqueService estoqueService;
     private final SessaoUsuario sessaoUsuario;
     private final ViewManager viewManager;
 
     private final ObservableList<Estoque> listaEstoque = FXCollections.observableArrayList();
     private FilteredList<Estoque> listaFiltrada;
 
+    private final Set<TipoMed> classesSelecionadas = EnumSet.noneOf(TipoMed.class);
+    private final List<CheckBox> checkboxesClasse = new ArrayList<>();
+    private final Label placeholderLabel = new Label();
+
     public EstoqueViewController(
             EstoqueRepository estoqueRepository,
+            EstoqueService estoqueService,
             SessaoUsuario sessaoUsuario,
             ViewManager viewManager) {
         this.estoqueRepository = estoqueRepository;
+        this.estoqueService = estoqueService;
         this.sessaoUsuario = sessaoUsuario;
         this.viewManager = viewManager;
     }
@@ -99,6 +126,7 @@ public class EstoqueViewController {
     private void initialize() {
         carregarUsuario();
         configurarColunas();
+        configurarFiltroClasse();
         carregarDados();
         configurarFiltroBusca();
     }
@@ -113,7 +141,7 @@ public class EstoqueViewController {
             return;
         }
 
-        com.gem.model.CargoProfissional cargoEnum = usuario.getCargo();
+        CargoProfissional cargoEnum = usuario.getCargo();
         String cargo = cargoEnum.name();
 
         if (usuarioLabel != null) {
@@ -141,7 +169,7 @@ public class EstoqueViewController {
         }
 
         // Se o usuário não for Coordenador, oculta ações de cadastro, remoção e histórico
-        boolean isCoordenador = cargoEnum == com.gem.model.CargoProfissional.COORDENADOR;
+        boolean isCoordenador = cargoEnum == CargoProfissional.COORDENADOR;
 
         if (btnCadastrarMedicamento != null) {
             btnCadastrarMedicamento.setVisible(isCoordenador);
@@ -190,6 +218,14 @@ public class EstoqueViewController {
             return new SimpleStringProperty(lote);
         });
 
+        // Coluna Validade (US-18)
+        if (validadeColumn != null) {
+            validadeColumn.setCellValueFactory(cellData -> {
+                LocalDate validade = cellData.getValue().getDataValidade();
+                return new SimpleStringProperty(validade != null ? validade.format(FORMATO_DATA) : "—");
+            });
+        }
+
         // Coluna Status com pill badges coloridos
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue()));
         statusColumn.setCellFactory(col -> new TableCell<>() {
@@ -221,32 +257,60 @@ public class EstoqueViewController {
             }
         });
 
-        // Coluna Ações: botão Remover
-    acoesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue()));
-    acoesColumn.setCellFactory(col -> new TableCell<>() {
+        // Coluna Ações: botão Remover (envia o medicamento da linha para a tela de remoção)
+        acoesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue()));
+        acoesColumn.setCellFactory(col -> new TableCell<>() {
 
-        private final Button btnRemover = new Button("Remover");
+            private final Button btnRemover = new Button("Remover");
 
-        {
-            btnRemover.getStyleClass().add("action-remover-link");
-            btnRemover.setOnAction(event -> {
-                Estoque item = getItem();
-                abrirRemoverMedicamento(item != null ? item.getMedicamento() : null);
-            });
-        }
-
-        @Override
-        protected void updateItem(Estoque item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty || item == null) {
-                setGraphic(null);
-            } else {
-                HBox box = new HBox(btnRemover);
-                box.setAlignment(Pos.CENTER);
-                setGraphic(box);
+            {
+                btnRemover.getStyleClass().add("action-remover-link");
+                btnRemover.setOnAction(event -> {
+                    Estoque item = getItem();
+                    abrirRemoverMedicamento(item != null ? item.getMedicamento() : null);
+                });
             }
-        }
+
+            @Override
+            protected void updateItem(Estoque item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    HBox box = new HBox(btnRemover);
+                    box.setAlignment(Pos.CENTER);
+                    setGraphic(box);
+                }
+            }
         });
+
+        // Mensagem exibida quando nenhum item corresponde aos filtros (US-18)
+        placeholderLabel.setStyle("-fx-text-fill: #64748B; -fx-font-size: 14px;");
+        estoqueTable.setPlaceholder(placeholderLabel);
+    }
+
+    /** US-19: um checkbox por classe terapêutica, permitindo selecionar uma ou mais. */
+    private void configurarFiltroClasse() {
+        if (filtroClasseBox == null) {
+            return;
+        }
+
+        for (TipoMed tipo : TipoMed.values()) {
+            CheckBox checkBox = new CheckBox(formatarTipoMed(tipo.name()));
+            checkBox.setStyle("-fx-text-fill: #0F172A; -fx-font-size: 13px;");
+
+            checkBox.selectedProperty().addListener((observable, anterior, marcado) -> {
+                if (marcado) {
+                    classesSelecionadas.add(tipo);
+                } else {
+                    classesSelecionadas.remove(tipo);
+                }
+                aplicarFiltros();
+            });
+
+            checkboxesClasse.add(checkBox);
+            filtroClasseBox.getChildren().add(checkBox);
+        }
     }
 
     private void carregarDados() {
@@ -257,7 +321,7 @@ public class EstoqueViewController {
             listaFiltrada = new FilteredList<>(listaEstoque, p -> true);
             estoqueTable.setItems(listaFiltrada);
 
-            atualizarContador();
+            aplicarFiltros();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,36 +329,42 @@ public class EstoqueViewController {
         }
     }
 
+    /** US-18: a busca é aplicada em tempo real, a cada tecla digitada. */
     private void configurarFiltroBusca() {
         if (campoBusca != null) {
-            campoBusca.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (listaFiltrada == null) return;
-
-                listaFiltrada.setPredicate(estoque -> {
-                    if (newValue == null || newValue.isBlank()) {
-                        return true;
-                    }
-
-                    String filtro = newValue.toLowerCase().trim();
-
-                    String principioAtivo = estoque.getPrincipioAtivo() != null
-                            ? estoque.getPrincipioAtivo().toLowerCase() : "";
-                    String dose = estoque.getDose() != null
-                            ? estoque.getDose().toLowerCase() : "";
-                    String lote = estoque.getLote() != null
-                            ? estoque.getLote().toLowerCase() : "";
-                    String tipo = estoque.getTipoMed() != null
-                            ? estoque.getTipoMed().name().toLowerCase() : "";
-
-                    return principioAtivo.contains(filtro)
-                            || dose.contains(filtro)
-                            || lote.contains(filtro)
-                            || tipo.contains(filtro);
-                });
-
-                atualizarContador();
-            });
+            campoBusca.textProperty().addListener((observable, anterior, novo) -> aplicarFiltros());
         }
+    }
+
+    /**
+     * Combina busca (princípio ativo / dose / lote) e classes selecionadas.
+     * O item só aparece se atender a TODOS os critérios ativos.
+     */
+    private void aplicarFiltros() {
+        if (listaFiltrada == null) {
+            return;
+        }
+
+        String termo = campoBusca != null ? campoBusca.getText() : "";
+        Set<TipoMed> classes = EnumSet.copyOf(classesSelecionadas);
+
+        listaFiltrada.setPredicate(estoque -> estoqueService.corresponde(estoque, termo, classes));
+
+        boolean filtrosAtivos = (termo != null && !termo.isBlank()) || !classes.isEmpty();
+        placeholderLabel.setText(filtrosAtivos
+                ? "Nenhum resultado encontrado para os filtros aplicados."
+                : "Nenhum medicamento em estoque.");
+
+        atualizarContador();
+    }
+
+    @FXML
+    public void limparFiltros() {
+        if (campoBusca != null) {
+            campoBusca.clear();
+        }
+        checkboxesClasse.forEach(checkBox -> checkBox.setSelected(false));
+        aplicarFiltros();
     }
 
     private void atualizarContador() {
@@ -333,7 +403,6 @@ public class EstoqueViewController {
             mostrarErro("Não foi possível abrir a remoção de medicamentos.");
         }
     }
-
 
     @FXML
     public void abrirMovimentacao() {
