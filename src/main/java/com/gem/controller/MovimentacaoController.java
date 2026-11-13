@@ -1,5 +1,6 @@
 package com.gem.controller;
 
+import com.gem.dto.SaidaMedicamentoDTO;
 import com.gem.model.Historico;
 import com.gem.model.SetorHosp;
 import com.gem.model.Usuario;
@@ -16,6 +17,16 @@ public class MovimentacaoController {
             MovimentacaoService movimentacaoService) {
 
         this.movimentacaoService = movimentacaoService;
+    }
+
+    public Historico registrarSaida(
+            SaidaMedicamentoDTO dto,
+            Usuario usuario) {
+
+        return movimentacaoService.registrarSaida(
+                usuario,
+                dto
+        );
     }
 
     public Historico registrarSaida(

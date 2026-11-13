@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.controller.CadastroMedicamentoController"
+    stylesheets="@movimentacao.css"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <!-- ======================================================================
+         SIDEBAR (Menu Lateral do Coordenador)
+         ====================================================================== -->
+    <left>
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <!-- Logo Header -->
+            <VBox styleClass="sidebar-logo-container" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="48.0" fitWidth="170.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+                <Separator styleClass="sidebar-separator"/>
+            </VBox>
+
+            <!-- Navigation Links -->
+            <VBox spacing="8" styleClass="sidebar-nav-container">
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="⇄  Movimentação"
+                    onAction="#abrirMovimentacao"
+                    styleClass="sidebar-nav-btn"/>
+
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="📦  Estoque"
+                    onAction="#voltar"
+                    styleClass="sidebar-nav-btn, sidebar-nav-btn-active"/>
+
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="🕒  Histórico"
+                    onAction="#abrirHistorico"
+                    styleClass="sidebar-nav-btn"/>
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- User Footer Widget -->
+            <VBox spacing="14" styleClass="sidebar-footer">
+                <Separator styleClass="sidebar-separator"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label
+                        prefHeight="42.0"
+                        prefWidth="42.0"
+                        minHeight="42.0"
+                        minWidth="42.0"
+                        text="GEM"
+                        styleClass="sidebar-avatar"/>
+
+                    <VBox alignment="CENTER_LEFT" spacing="2" HBox.hgrow="ALWAYS">
+                        <Label
+                            fx:id="usuarioLabel"
+                            text="Coordenador"
+                            styleClass="sidebar-user-name"/>
+                        <Label
+                            text="Coordenação Geral"
+                            styleClass="sidebar-user-role"/>
+                    </VBox>
+
+                    <Button
+                        text="➔"
+                        onAction="#sair"
+                        styleClass="sidebar-logout-btn"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ======================================================================
+         ÁREA PRINCIPAL
+         ====================================================================== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30 36 28 36;">
+
+            <!-- Header Principal -->
+            <HBox alignment="CENTER_LEFT" styleClass="main-header">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Cadastro de Medicamentos" styleClass="header-title"/>
+                    <Label text="Cadastre novos princípios ativos e configure o lote e estoque inicial no catálogo." styleClass="header-subtitle"/>
+                </VBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <Label fx:id="acessoLabel" text="Acesso: Coordenador" styleClass="header-profile-badge"/>
+                    <Label prefHeight="38.0" prefWidth="38.0" text="COORD" styleClass="header-avatar"/>
+                </HBox>
+            </HBox>
+
+            <!-- Linha Principal de Conteúdo (Formulário + Resumo) -->
+            <HBox spacing="24" VBox.vgrow="ALWAYS">
+
+                <!-- PAINEL CENTRAL (Formulário de Cadastro) -->
+                <VBox styleClass="form-card" spacing="18" HBox.hgrow="ALWAYS">
+                    <Label text="Dados do Medicamento e Lote Inicial" styleClass="form-section-title"/>
+
+                    <!-- Grid de Campos -->
+                    <GridPane hgap="18" vgap="14">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <!-- Linha 1: Princípio Ativo e Dose -->
+                        <Label text="PRINCÍPIO ATIVO *" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="DOSE *" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <TextField
+                            fx:id="campoPrincipioAtivo"
+                            prefHeight="40.0"
+                            promptText="Ex: Tramadol"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="1"/>
+
+                        <TextField
+                            fx:id="campoDose"
+                            prefHeight="40.0"
+                            promptText="Ex: 50 mg/ml"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="1"/>
+
+                        <!-- Linha 2: Classe Terapêutica e Laboratório -->
+                        <Label text="CLASSE TERAPÊUTICA (TIPO) *" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label text="LABORATÓRIO *" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <ComboBox
+                            fx:id="campoTipoMed"
+                            prefHeight="40.0"
+                            maxWidth="Infinity"
+                            promptText="Selecione a classe terapêutica"
+                            styleClass="combo-box-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="3"/>
+
+                        <TextField
+                            fx:id="campoLaboratorio"
+                            prefHeight="40.0"
+                            promptText="Ex: EMS / Eurofarma"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="3"/>
+
+                        <!-- Linha 3: Quantidade Inicial e Lote Inicial -->
+                        <Label text="QUANTIDADE INICIAL *" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <Label text="LOTE INICIAL *" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                        <TextField
+                            fx:id="campoQuantidade"
+                            prefHeight="40.0"
+                            promptText="Ex: 100"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="5"/>
+
+                        <TextField
+                            fx:id="campoLote"
+                            prefHeight="40.0"
+                            promptText="Ex: TRM24A01"
+                            styleClass="text-input-field"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="5"/>
+
+                        <!-- Linha 4: Responsável pelo Cadastro -->
+                        <Label text="RESPONSÁVEL PELO REGISTRO" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2"/>
+
+                        <TextField
+                            fx:id="campoResponsavel"
+                            prefHeight="40.0"
+                            editable="false"
+                            focusTraversable="false"
+                            text="COORDENADOR"
+                            styleClass="readonly-field"
+                            GridPane.columnIndex="0"
+                            GridPane.rowIndex="7"
+                            GridPane.columnSpan="2"/>
+
+                        <rowConstraints>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                        </rowConstraints>
+                    </GridPane>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <!-- PAINEL LATERAL DIREITO (Revisão e Ações) -->
+                <VBox styleClass="summary-card" prefWidth="380.0" minWidth="360.0" spacing="16">
+                    <Label text="Revisão do Registro" styleClass="summary-title"/>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <!-- Responsável Real -->
+                    <VBox spacing="4">
+                        <Label text="CO-AUTOR DA AÇÃO" styleClass="summary-caption"/>
+                        <Label fx:id="resumoResponsavelLabel" text="COORDENADOR" styleClass="summary-primary-text"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="PERFIL RESPONSÁVEL" styleClass="summary-caption"/>
+                        <Label fx:id="resumoPerfilLabel" text="Coordenação Geral" styleClass="summary-secondary-text"/>
+                    </VBox>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <Label text="Preencha os campos obrigatórios com (*) para cadastrar o medicamento no inventário do hospital com rastreabilidade de lote."
+                           wrapText="true"
+                           styleClass="summary-secondary-text"/>
+
+                    <Separator styleClass="summary-divider"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Botão de Salvar Medicamento -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="46.0"
+                        text="✔  Salvar Medicamento"
+                        onAction="#cadastrar"
+                        styleClass="confirm-action-btn"/>
+
+                    <!-- Botão de Limpar Campos -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="40.0"
+                        text="Limpar Campos"
+                        onAction="#limparCampos"
+                        styleClass="cancel-action-btn"/>
+
+                    <!-- Botão de Voltar -->
+                    <Button
+                        maxWidth="Infinity"
+                        prefHeight="38.0"
+                        text="Voltar ao Painel"
+                        onAction="#voltar"
+                        styleClass="cancel-action-btn"/>
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns="http://javafx.com/javafx/27"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.gem.view.HistoricoViewController"
+    stylesheets="@movimentacao.css"
+    maxHeight="900.0"
+    maxWidth="1440.0"
+    minHeight="900.0"
+    minWidth="1440.0"
+    prefHeight="900.0"
+    prefWidth="1440.0">
+
+    <!-- ======================================================================
+         SIDEBAR (Menu Lateral do Coordenador: Movimentação, Estoque, Histórico)
+         ====================================================================== -->
+    <left>
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <!-- Logo Header -->
+            <VBox styleClass="sidebar-logo-container" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="48.0" fitWidth="170.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/gem-icon-home.png"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+                <Separator styleClass="sidebar-separator"/>
+            </VBox>
+
+            <!-- Navigation Links -->
+            <VBox spacing="8" styleClass="sidebar-nav-container">
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="⇄  Movimentação"
+                    onAction="#abrirMovimentacao"
+                    styleClass="sidebar-nav-btn"/>
+
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="📦  Estoque"
+                    onAction="#abrirEstoque"
+                    styleClass="sidebar-nav-btn"/>
+
+                <Button
+                    maxWidth="Infinity"
+                    prefHeight="44.0"
+                    text="🕒  Histórico"
+                    styleClass="sidebar-nav-btn, sidebar-nav-btn-active"/>
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- User Footer Widget -->
+            <VBox spacing="14" styleClass="sidebar-footer">
+                <Separator styleClass="sidebar-separator"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label
+                        prefHeight="42.0"
+                        prefWidth="42.0"
+                        minHeight="42.0"
+                        minWidth="42.0"
+                        text="GEM"
+                        styleClass="sidebar-avatar"/>
+
+                    <VBox alignment="CENTER_LEFT" spacing="2" HBox.hgrow="ALWAYS">
+                        <Label
+                            fx:id="usuarioLabel"
+                            text="Coordenador"
+                            styleClass="sidebar-user-name"/>
+                        <Label
+                            text="Coordenação Geral"
+                            styleClass="sidebar-user-role"/>
+                    </VBox>
+
+                    <Button
+                        text="➔"
+                        onAction="#sair"
+                        styleClass="sidebar-logout-btn"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ======================================================================
+         ÁREA PRINCIPAL (Histórico de Movimentações)
+         ====================================================================== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30 36 28 36;">
+
+            <!-- Header Principal -->
+            <HBox alignment="CENTER_LEFT" styleClass="main-header">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Histórico de Movimentações" styleClass="header-title"/>
+                    <Label text="Consulte e filtre todas as movimentações registradas no estoque" styleClass="header-subtitle"/>
+                </VBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <Label text="Acesso: Coordenador" styleClass="header-profile-badge"/>
+                    <Label prefHeight="38.0" prefWidth="38.0" text="COORD" styleClass="header-avatar"/>
+                </HBox>
+            </HBox>
+
+            <!-- CARD DE FILTROS -->
+            <VBox styleClass="form-card" spacing="14">
+                <Label text="Filtros de Pesquisa" styleClass="form-section-title"/>
+
+                <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="20"/>
+                        <ColumnConstraints percentWidth="20"/>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="10"/>
+                    </columnConstraints>
+
+                    <!-- Labels -->
+                    <Label
+                        text="TIPO DE MOVIMENTAÇÃO"
+                        styleClass="field-label"
+                        GridPane.columnIndex="0"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="DATA INICIAL"
+                        styleClass="field-label"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="DATA FINAL"
+                        styleClass="field-label"
+                        GridPane.columnIndex="2"
+                        GridPane.rowIndex="0"/>
+
+                    <Label
+                        text="PRINCÍPIO ATIVO"
+                        styleClass="field-label"
+                        GridPane.columnIndex="3"
+                        GridPane.rowIndex="0"/>
+
+                    <!-- Campos -->
+                    <ComboBox
+                        fx:id="tipoMovComboBox"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="Todos os tipos"
+                        styleClass="combo-box-field"
+                        GridPane.columnIndex="0"
+                        GridPane.rowIndex="1"/>
+
+                    <DatePicker
+                        fx:id="dataInicioDatePicker"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="dd/mm/aaaa"
+                        styleClass="text-input-field"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="1"/>
+
+                    <DatePicker
+                        fx:id="dataFimDatePicker"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="dd/mm/aaaa"
+                        styleClass="text-input-field"
+                        GridPane.columnIndex="2"
+                        GridPane.rowIndex="1"/>
+
+                    <TextField
+                        fx:id="principioAtivoField"
+                        prefHeight="40"
+                        maxWidth="1.7976931348623157E308"
+                        promptText="Ex: Dipirona"
+                        styleClass="text-input-field"
+                        GridPane.columnIndex="3"
+                        GridPane.rowIndex="1"/>
+
+                    <!-- Botões empilhados na última coluna -->
+                    <VBox
+                        spacing="6"
+                        GridPane.columnIndex="4"
+                        GridPane.rowIndex="0"
+                        GridPane.rowSpan="2"
+                        GridPane.valignment="BOTTOM">
+
+                        <Button
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="40"
+                            text="Filtrar"
+                            onAction="#filtrar"
+                            styleClass="confirm-action-btn"/>
+
+                        <Button
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="40"
+                            text="Limpar"
+                            onAction="#limpar"
+                            styleClass="cancel-action-btn"/>
+
+                    </VBox>
+
+                </GridPane>
+
+            </VBox>
+
+            <!-- TABELA DE HISTÓRICO -->
+            <VBox
+                styleClass="form-card"
+                spacing="12"
+                VBox.vgrow="ALWAYS">
+
+                <Label
+                    text="Registros de Movimentação"
+                    styleClass="form-section-title"/>
+
+                <TableView
+                    fx:id="historicoTable"
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-background-color: transparent;
+                           -fx-border-color: transparent;">
+
+                    <columns>
+
+                        <TableColumn
+                            fx:id="tipoMovColumn"
+                            text="Tipo"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="medicamentoColumn"
+                            text="Medicamento"
+                            prefWidth="220"/>
+
+                        <TableColumn
+                            fx:id="quantidadeColumn"
+                            text="Quantidade"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="dataHoraColumn"
+                            text="Data / Hora"
+                            prefWidth="160"/>
+
+                        <TableColumn
+                            fx:id="profissionalColumn"
+                            text="Profissional"
+                            prefWidth="140"/>
+
+                        <TableColumn
+                            fx:id="setorColumn"
+                            text="Setor de Destino"
+                            prefWidth="160"/>
+
+                        <TableColumn
+                            fx:id="qtdAntesColumn"
+                            text="Qtd. Antes"
+                            prefWidth="110"/>
+
+                        <TableColumn
+                            fx:id="qtdDepoisColumn"
+                            text="Qtd. Depois"
+                            prefWidth="110"/>
+
+                    </columns>
+
+                    <placeholder>
+                        <Label
+                            text="Nenhuma movimentação encontrada para os filtros aplicados."
+                            style="-fx-text-fill: #64748B; -fx-font-size: 14px;"/>
+                    </placeholder>
+
+                </TableView>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
