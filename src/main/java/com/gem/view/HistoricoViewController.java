@@ -155,7 +155,7 @@ public class HistoricoViewController {
     private void abrirMovimentacao() {
 
         try {
-
+          
             Usuario usuario = sessaoUsuario.getUsuarioAtual();
             Stage stage = (Stage) usuarioLabel.getScene().getWindow();
 
@@ -403,6 +403,7 @@ public class HistoricoViewController {
         alert.setContentText(mensagem);
         alert.showAndWait();
     }
+
     @FXML
     public void voltar() {
         try {

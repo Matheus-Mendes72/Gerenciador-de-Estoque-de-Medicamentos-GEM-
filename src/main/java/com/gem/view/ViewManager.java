@@ -224,6 +224,21 @@ public class ViewManager {
         }
     }
 
+    public void mostrarHistorico(Stage stage) throws IOException {
+
+        FXMLLoader loader =
+                criarLoader("/view/TelaHistorico.fxml");
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+        stage.setTitle("GEM - Histórico de Movimentações");
+        stage.setResizable(false);
+        stage.show();
+    }
+
     private FXMLLoader criarLoader(String caminho) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(caminho));
         loader.setControllerFactory(springContext::getBean);
