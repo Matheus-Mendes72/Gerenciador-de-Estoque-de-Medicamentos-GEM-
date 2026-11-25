@@ -132,6 +132,26 @@
                 <VBox styleClass="form-card" spacing="18" HBox.hgrow="ALWAYS">
                     <Label text="Dados da Movimentação" styleClass="form-section-title"/>
 
+                    <!-- US-22: Barra de busca por princípio ativo (busca em tempo real) -->
+                    <VBox spacing="4">
+                        <Label text="BUSCAR MEDICAMENTO POR PRINCÍPIO ATIVO" styleClass="field-label"/>
+                        <HBox styleClass="search-field-container" alignment="CENTER_LEFT" prefHeight="40.0">
+                            <Label text="🔍" style="-fx-font-size: 14px; -fx-text-fill: #94A3B8; -fx-padding: 0 6 0 0;"/>
+                            <TextField
+                                fx:id="buscaMedicamentoField"
+                                promptText="Ex: Dipirona, Amoxicilina, Ibuprofeno..."
+                                styleClass="search-field-input"
+                                HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <!-- US-22: Aviso quando nenhum medicamento é encontrado -->
+                        <Label
+                            fx:id="semResultadoLabel"
+                            text="⚠  Nenhum medicamento encontrado para o princípio ativo informado."
+                            style="-fx-text-fill: #B45309; -fx-font-size: 12px;"
+                            visible="false"
+                            managed="false"/>
+                    </VBox>
+
                     <!-- Grid de Campos Reais -->
                     <GridPane hgap="18" vgap="14">
                         <columnConstraints>

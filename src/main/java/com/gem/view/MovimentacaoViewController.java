@@ -19,7 +19,9 @@ import javafx.util.StringConverter;
 
 import org.springframework.stereotype.Component;
 
+import java.text.Normalizer;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class MovimentacaoViewController {
@@ -59,6 +61,17 @@ public class MovimentacaoViewController {
 
     @FXML
     private ComboBox<String> setorComboBox;
+
+    // US-22: campo de busca por princípio ativo
+    @FXML
+    private TextField buscaMedicamentoField;
+
+    // US-22: label informativo quando nenhum resultado é encontrado
+    @FXML
+    private Label semResultadoLabel;
+
+    // cache de todos os itens ativos do estoque para filtragem local
+    private List<Estoque> todosItensEstoque = List.of();
 
     private final MovimentacaoController movimentacaoController;
     private final SessaoUsuario sessaoUsuario;
@@ -111,6 +124,13 @@ public class MovimentacaoViewController {
         }
 
         carregarComboMedicamentos();
+
+        // US-22: busca em tempo real por princípio ativo
+        if (buscaMedicamentoField != null) {
+            buscaMedicamentoField.textProperty().addListener(
+                    (obs, anterior, atual) -> filtrarMedicamentos(atual)
+            );
+        }
     }
 
     private void carregarComboMedicamentos() {
@@ -118,11 +138,62 @@ public class MovimentacaoViewController {
             return;
         }
 
-        medicamentoComboBox.getItems().clear();
+        // US-22: carrega todos os itens ativos e guarda em cache local
+        todosItensEstoque = estoqueRepository.findAllAtivos();
 
-        List<Estoque> lista = estoqueRepository.findAllAtivos();
-        medicamentoComboBox.setItems(FXCollections.observableArrayList(lista));
+        aplicarConverterEstoque();
+        filtrarMedicamentos(buscaMedicamentoField != null ? buscaMedicamentoField.getText() : "");
+    }
 
+    /**
+     * US-22: filtra o ComboBox de medicamentos em tempo real conforme o
+     * princípio ativo digitado. A filtragem é feita sobre o cache local
+     * para não disparar queries a cada tecla pressionada.
+     */
+    private void filtrarMedicamentos(String termo) {
+        if (medicamentoComboBox == null) {
+            return;
+        }
+
+        List<Estoque> filtrados;
+
+        if (termo == null || termo.isBlank()) {
+            filtrados = todosItensEstoque;
+        } else {
+            String termoNorm = normalizar(termo);
+            filtrados = todosItensEstoque.stream()
+                    .filter(e -> {
+                        String pa = e.getPrincipioAtivo();
+                        return pa != null && normalizar(pa).contains(termoNorm);
+                    })
+                    .toList();
+        }
+
+        medicamentoComboBox.setItems(FXCollections.observableArrayList(filtrados));
+
+        // US-22: exibe aviso quando nenhum resultado é encontrado
+        if (semResultadoLabel != null) {
+            semResultadoLabel.setVisible(filtrados.isEmpty() && termo != null && !termo.isBlank());
+            semResultadoLabel.setManaged(filtrados.isEmpty() && termo != null && !termo.isBlank());
+        }
+
+        // abre o popup somente se houver resultados e o campo não estiver vazio
+        if (!filtrados.isEmpty() && termo != null && !termo.isBlank()) {
+            if (!medicamentoComboBox.isShowing()) {
+                medicamentoComboBox.show();
+            }
+        }
+    }
+
+    /** Ignora maiúsculas/minúsculas e acentos para a busca. */
+    private String normalizar(String texto) {
+        return Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT)
+                .trim();
+    }
+
+    private void aplicarConverterEstoque() {
         medicamentoComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(Estoque estoque) {
@@ -582,6 +653,16 @@ public class MovimentacaoViewController {
         if (medicamentoComboBox != null) {
             medicamentoComboBox.setValue(null);
             medicamentoComboBox.getSelectionModel().clearSelection();
+        }
+
+        // US-22: limpa o campo de busca e reexibe todos os itens
+        if (buscaMedicamentoField != null) {
+            buscaMedicamentoField.clear();
+        }
+
+        if (semResultadoLabel != null) {
+            semResultadoLabel.setVisible(false);
+            semResultadoLabel.setManaged(false);
         }
 
         if (medicamentoField != null) {

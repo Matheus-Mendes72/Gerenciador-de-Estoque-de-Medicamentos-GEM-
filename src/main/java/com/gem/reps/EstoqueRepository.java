@@ -16,4 +16,11 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Integer> {
     @Query("SELECT e FROM Estoque e LEFT JOIN FETCH e.medicamento m " +
        "WHERE m IS NULL OR m.ativo = true ORDER BY e.id")
     List<Estoque> findAllAtivos();
+
+    // US-22: Busca por princípio ativo (parcial, case-insensitive)
+    @Query("SELECT e FROM Estoque e LEFT JOIN FETCH e.medicamento m " +
+           "WHERE (m IS NULL OR m.ativo = true) " +
+           "AND LOWER(COALESCE(e.principioAtivo, m.principioAtivo, '')) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+           "ORDER BY e.id")
+    List<Estoque> findAtivosByPrincipioAtivoContaining(String termo);
 }
